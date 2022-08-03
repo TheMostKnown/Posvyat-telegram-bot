@@ -1,5 +1,5 @@
 from create_bot import bot
-from tg_backend.handlers import admin, commands, user, organizer
+from tgbot.handlers import commands
 
 commands.register_handlers_commands(bot)
 # admin.register_handlers_admin(bot)
