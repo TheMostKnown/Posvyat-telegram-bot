@@ -1,8 +1,18 @@
-from create_bot import bot
+import telegram
+import logging
 
-# @bot.message_handler(content_types=['text'])
-def repeat(message):
-    bot.send_message(message.chat.id, message.text)
+from tgbot.handlers import static_text
+from tgbot.filters.filters import User
 
-def register_handlers_commands(bot):
-    bot.register_message_handler(repeat, content_types=['text'])
+
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text="I'm a bot, please talk to me!")
+
+def echo(update, context):
+    # добавим в начало полученного сообщения строку 'ECHO: '
+    text = 'ECHO: ' + update.message.text
+    # `update.effective_chat.id` - определяем `id` чата,
+    # откуда прилетело сообщение
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text=text)

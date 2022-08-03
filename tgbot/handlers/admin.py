@@ -1,4 +1,3 @@
-from create_bot import bot
+import telegram
 
-# def register_handlers_admin(bot):
-#
+from tgbot.handlers import static_text
