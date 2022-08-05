@@ -40,7 +40,7 @@ def get_creds(creds_file: str, token_file: str) -> Credentials:
 
 def get_data(
         spreadsheet_id: str,
-        creds_file_name: str = 'credentials.json',
+        creds_file_name: str = 'creds.json',
         token_file_name: str = 'token.json'
 ) -> dict:
     """
@@ -88,8 +88,8 @@ def get_data(
 
                     for j, value in enumerate(row['values']):
 
-                        if value and 'formatted_value' in value.keys():
-                            row['values'][j] = value['formatted_value']
+                        if value and 'formattedValue' in value.keys():
+                            row['values'][j] = value['formattedValue']
                         else:
                             row['values'][j] = None
 
