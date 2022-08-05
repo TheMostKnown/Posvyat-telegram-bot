@@ -1,0 +1,5 @@
+requests
+
+# Telegram
+python-telegram-bot
+python-telegram-bot-pagination==0.0.2
