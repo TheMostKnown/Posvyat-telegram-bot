@@ -13,12 +13,12 @@ services:
       - db
 
   db:
-    image: postgres
-    environment:
-      POSTGRES_USER: bot
-      POSTGRES_DB: bot
-      POSTGRES_PASS: zuri1234
+    image: postgres:12.0-alpine
     volumes:
-      - pgdata:/var/lib/posgresql/data
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
 volumes:
-  pgdata:
+  postgres_data:
