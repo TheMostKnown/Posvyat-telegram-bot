@@ -10,3 +10,15 @@ services:
 #      - ./.env
     depends_on:
       - web
+      - db
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: bot
+      POSTGRES_DB: bot
+      POSTGRES_PASS: zuri1234
+    volumes:
+      - pgdata:/var/lib/posgresql/data
+volumes:
+  pgdata:

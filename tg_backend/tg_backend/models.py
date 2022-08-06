@@ -39,11 +39,11 @@ class guest(models.Model):
 class organizer_schedule(models.Model):
 
     id = models.IntegerField(primary_key=True)
-    tg_tag = models.ForeignKey('organizers', on_delete=models.PROTECT, to_field='tg_tag')
+    tg_tag = models.ForeignKey('organizers', on_delete=models.PROTECT, to_field='tg_tag', related_name='tg_tag1')
     desc = models.CharField(max_length=20)
     start_time = models.TimeField(auto_now=False, auto_now_add=False)
     finish_time = models.TimeField(auto_now=False, auto_now_add=False)
-    changer = models.ForeignKey('organizers', on_delete=models.PROTECT, to_field='tg_tag')
+    changer = models.ForeignKey('organizers', on_delete=models.PROTECT, to_field='tg_tag', related_name='tg_tag2')
 
 class guest_schedule(models.Model):
 
@@ -71,7 +71,7 @@ class issue(models.Model):
     id = models.IntegerField(primary_key=True)
     tg_tag = models.ForeignKey('organizers', on_delete=models.PROTECT, to_field='tg_tag')
     desc = models.TextField()
-    status = models.CharField()
+    status = models.CharField(max_length=256)
 
 
 
