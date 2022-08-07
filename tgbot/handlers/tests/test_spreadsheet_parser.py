@@ -66,4 +66,4 @@ def test_guest_filter():
 
 
 if __name__ == '__main__':
-    test_guest_filter()
+    test_parser()

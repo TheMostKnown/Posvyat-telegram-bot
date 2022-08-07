@@ -1,5 +1,12 @@
 requests
 
+# Django
+Django
+
+# Type Validation
+pydantic
+typing
+
 # Telegram
 python-telegram-bot
 python-telegram-bot-pagination==0.0.2
