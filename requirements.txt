@@ -5,6 +5,8 @@ Django
 
 # Type Validation
 pydantic
+pydantic[dotenv]
+python-dotenv
 typing
 
 # Telegram

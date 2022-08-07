@@ -1,14 +1,15 @@
 from tgbot.handlers.spreadsheet_parser.spreadsheet_parser import get_data
+from tgbot.config import settings
 
-test_sheets_id = '1LOBtfD8BeT24SsLb4lamyOaLT0kBAPNVoxdD4-K4UMk'
+test_sheets_id = settings.GOOGLE_TABLE_ID
 
 
 def test_parser():
 
     sheets_data = get_data(
         spreadsheet_id=test_sheets_id,
-        creds_file_name='../secrets/creds.json',
-        token_file_name='../secrets/token.json'
+        creds_file_name=settings.GOOGLE_CREDS_PATH,
+        token_file_name=settings.GOOGLE_TOKEN_PATH
     )
 
     sheet = sheets_data['Лист1']
@@ -58,8 +59,8 @@ def test_guest_filter():
         sheet_name='Лист1',
         vk_link_column=0,
         status_column=2,
-        creds_file_name='../secrets/creds.json',
-        token_file_name='../secrets/token.json'
+        creds_file_name=settings.GOOGLE_CREDS_PATH,
+        token_file_name=settings.GOOGLE_TOKEN_PATH
     )
 
     print(sheets_data)

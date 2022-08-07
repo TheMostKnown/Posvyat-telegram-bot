@@ -6,13 +6,13 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 
-def get_creds(creds_file: str, token_file: str) -> Credentials:
+def get_creds(creds_file_name: str, token_file_name: str) -> Credentials:
     """
     Parameter:
-        creds_file : str
-            name of the file with saved credentials
-        token_file : str
-            name of the file with saved auth token
+        creds_json : str
+            google api credentials from config.py
+        token_json : str
+            google api token from config.py
     Returns:
         credentials for authorization in google api
     """
@@ -22,17 +22,17 @@ def get_creds(creds_file: str, token_file: str) -> Credentials:
 
     creds = None
 
-    if os.path.exists(token_file):
-        creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+    if os.path.exists(token_file_name):
+        creds = Credentials.from_authorized_user_file(token_file_name, SCOPES)
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(creds_file, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(creds_file_name, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open(token_file, 'w') as token:
+        with open(token_file_name, 'w') as token:
             token.write(creds.to_json())
 
     return creds
