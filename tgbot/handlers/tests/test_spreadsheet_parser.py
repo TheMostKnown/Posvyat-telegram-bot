@@ -1,4 +1,4 @@
-from tgbot.handlers.spreadsheet_parser import get_data
+from tgbot.handlers.spreadsheet_parser.spreadsheet_parser import get_data
 
 test_sheets_id = '1LOBtfD8BeT24SsLb4lamyOaLT0kBAPNVoxdD4-K4UMk'
 
