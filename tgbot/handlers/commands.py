@@ -1,8 +1,9 @@
 import telegram
 import logging
 
-from tgbot.handlers import static_text
-from tgbot.filters.filters import User
+
+from . import static_text
+from filters import User
 
 
 def start(update, context):

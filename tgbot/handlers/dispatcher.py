@@ -1,6 +1,4 @@
 import telegram
-import tg_config
-
 from telegram.ext import (
     Updater, Dispatcher, Filters,
     CommandHandler, MessageHandler,
@@ -8,9 +6,9 @@ from telegram.ext import (
     ChosenInlineResultHandler, PollAnswerHandler,
 )
 
-from tgbot.handlers import commands
-
-from tgbot.handlers import admin, commands, organizer, user
+from . import tg_config
+from . import commands
+from . import admin, commands, organizer, user
 
 def setup_dispatcher(dp):
     """
