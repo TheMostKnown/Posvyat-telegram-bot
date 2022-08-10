@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 
-def get_creds(creds_file_name: str, token_file_name: str) -> Credentials:
+def get_creds(creds_abs_path: str, token_abs_path: str) -> Credentials:
     """
     Parameter:
         creds_json : str
@@ -22,17 +22,17 @@ def get_creds(creds_file_name: str, token_file_name: str) -> Credentials:
 
     creds = None
 
-    if os.path.exists(token_file_name):
-        creds = Credentials.from_authorized_user_file(token_file_name, SCOPES)
+    if os.path.exists(token_abs_path):
+        creds = Credentials.from_authorized_user_file(token_abs_path, SCOPES)
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(creds_file_name, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(creds_abs_path, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open(token_file_name, 'w') as token:
+        with open(token_abs_path, 'w') as token:
             token.write(creds.to_json())
 
     return creds
@@ -40,8 +40,8 @@ def get_creds(creds_file_name: str, token_file_name: str) -> Credentials:
 
 def get_data(
         spreadsheet_id: str,
-        creds_file_name: str = 'creds.json',
-        token_file_name: str = 'token.json'
+        creds_abs_path: str = 'creds.json',
+        token_abs_path: str = 'token.json'
 ) -> dict:
     """
     Parameter:
@@ -57,7 +57,7 @@ def get_data(
 
     tables = dict()
 
-    creds = get_creds(creds_file_name, token_file_name)
+    creds = get_creds(creds_abs_path, token_abs_path)
 
     service = build('sheets', 'v4', credentials=creds)
 

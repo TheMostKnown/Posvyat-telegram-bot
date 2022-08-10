@@ -1,9 +1,14 @@
+import os
+
 from pydantic import BaseSettings
 from typing import Optional
+
+dir_name = os.path.dirname(__file__)
 
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = 'POSVYAT_TG'
+    DIR_NAME: str = os.path.dirname(__file__)
 
     TG_TOKEN: Optional[str]
 
@@ -13,7 +18,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_prefix = 'POSVYAT_TG_'
-        env_file = r'C:\Users\user\PycharmProjects\posvyatTg\tgbot\.env'
+        env_file = f'{dir_name}\secrets\.env'
         env_file_encoding = 'utf-8'
         fields = {
             'GOOGLE_TABLE_ID': {'env': 'GOOGLE_TABLE_ID'},
