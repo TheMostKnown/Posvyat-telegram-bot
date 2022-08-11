@@ -1,1 +1,1 @@
-from tgbot.handlers import user
+from . import user
