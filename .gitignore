@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-tg_config.py
+tgbot/handlers/tg_config.py
 
 # IDE directory
 .idea/
