@@ -1,5 +1,6 @@
 from backend.tg_backend.models import Organizers, Level
 
+
 class User:
     """The object is the user.
     chat_id - user's tg chat id
@@ -20,14 +21,17 @@ class User:
         return type(other) == User and self.chat_id == other.chat_id and self.username == other.username
 
 
-def is_organizer(id_p):
+def is_organizer(user_id: int):
     for member in Organizers.objects.all():
-        if member.id == id_p:
+        if member.id == user_id:
             return True
+
     return False
 
-def is_admin(id_p):
-    if (is_organizer(id_p)):
-        if Level.objects.get(id = id_p).level == 'developer':
+
+def is_admin(user_id: int):
+    if is_organizer(user_id):
+        if Level.objects.get(id=user_id).level == 'developer':
             return True
+
     return False

@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Organizers(models.Model):
-
     id = models.IntegerField(primary_key=True)
     level = models.ForeignKey('level', on_delete=models.PROTECT)
     room = models.ForeignKey('room', on_delete=models.PROTECT)
@@ -16,13 +15,11 @@ class Organizers(models.Model):
 
 
 class Room(models.Model):
-
     number = models.CharField(max_length=4, primary_key=True)
     capacity = models.IntegerField()
 
 
 class Guest(models.Model):
-
     id = models.IntegerField(primary_key=True)
     level = models.ForeignKey('level', on_delete=models.PROTECT)
     surname = models.CharField(max_length=20)
@@ -37,7 +34,6 @@ class Guest(models.Model):
 
 
 class OrganizerSchedule(models.Model):
-
     id = models.IntegerField(primary_key=True)
     tg_tag = models.ForeignKey('organizers', on_delete=models.PROTECT, to_field='tg_tag', related_name='tg_tag1')
     desc = models.CharField(max_length=20)
@@ -47,7 +43,6 @@ class OrganizerSchedule(models.Model):
 
 
 class GuestSchedule(models.Model):
-
     id = models.IntegerField(primary_key=True)
     desc = models.CharField(max_length=20)
     start_time = models.TimeField(auto_now=False, auto_now_add=False)
@@ -55,13 +50,11 @@ class GuestSchedule(models.Model):
 
 
 class Level(models.Model):
-
     id = models.IntegerField(primary_key=True)
     level = models.CharField(max_length=15)
 
 
 class Broadcast(models.Model):
-
     id = models.IntegerField(primary_key=True)
     level = models.ForeignKey('level', on_delete=models.PROTECT)
     title = models.CharField(max_length=30)
@@ -69,7 +62,6 @@ class Broadcast(models.Model):
 
 
 class Issue(models.Model):
-
     id = models.IntegerField(primary_key=True)
     tg_tag = models.ForeignKey('organizers', on_delete=models.PROTECT, to_field='tg_tag')
     desc = models.TextField()
@@ -77,14 +69,12 @@ class Issue(models.Model):
 
 
 class Script(models.Model):
-
     id = models.IntegerField(primary_key=True)
     head = models.TextField()
     text = models.TextField()
 
 
 class Button(models.Model):
-
     id = models.IntegerField(primary_key=True)
     title_from = models.ForeignKey('script', on_delete=models.CASCADE)
     text = models.TextField()

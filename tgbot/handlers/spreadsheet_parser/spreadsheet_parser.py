@@ -43,16 +43,19 @@ def get_data(
         creds_abs_path: str = 'creds.json',
         token_abs_path: str = 'token.json'
 ) -> dict:
-    """
-    Parameter:
-        spreadsheet_id : str
-            id of google spreadsheet
-        creds_file : str
-            name of the file with saved credentials
-        token_file : str
-            name of the file with saved auth token
-    Returns:
-        dict: all sheets' data in lists
+    """Function retrieves all non-empty rows from spreadsheet
+
+    :param spreadsheet_id: id of google spreadsheet
+    :type spreadsheet_id: str
+
+    :param creds_abs_path: absolute path to the file with saved credentials
+    :type creds_abs_path: str
+
+    :param token_abs_path : absolute path to the file with saved auth token
+    :type token_abs_path: str
+
+    :return: all sheets' data in lists
+    :rtype: dict
     """
 
     tables = dict()
