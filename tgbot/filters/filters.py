@@ -31,7 +31,9 @@ def is_organizer(user_id: int):
 
 def is_admin(user_id: int):
     if is_organizer(user_id):
-        if Organizers.objects.get(tg_tag=user_id).level.level == 'developer':
+        organizer = Organizers.objects.get(tg_tag=user_id)
+
+        if organizer and organizer.level.level == 'developer':
             return True
 
     return False
