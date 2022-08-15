@@ -3,8 +3,6 @@ import logging
 
 
 from . import static_text
-from filters import User
-
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id,

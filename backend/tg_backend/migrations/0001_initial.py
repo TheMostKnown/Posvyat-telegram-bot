@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='organizers',
+            name='Organizers',
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
                 ('surname', models.CharField(max_length=20)),

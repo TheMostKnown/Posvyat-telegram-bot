@@ -9,6 +9,7 @@ from telegram.ext import (
 from . import tg_config
 from . import commands
 from . import admin, commands, organizer, user
+from tgbot.filters import filters
 
 def setup_dispatcher(dp):
     """
@@ -18,11 +19,12 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler('start', commands.start))
     dp.add_handler(MessageHandler(Filters.text & (~Filters.command), commands.echo))
 
-
-    # # admin commands
-    # dp.add_handler(CommandHandler("admin", admin.admin))
+    # admin commands
+    dp.add_handler(CommandHandler("admin", admin.admin))
     # dp.add_handler(CommandHandler("stats", admin.stats))
 
+    # organizer commands
+    dp.add_handler(CommandHandler("organizer", organizer.organizer))
 
     # EXAMPLES FOR HANDLERS
     # dp.add_handler(MessageHandler(Filters.text, <function_handler>))

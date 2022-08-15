@@ -1,3 +1,6 @@
+from backend.tg_backend.models import Organizers, Level
+
+
 class User:
     """The object is the user.
     chat_id - user's tg chat id
@@ -16,3 +19,21 @@ class User:
 
     def __eq__(self, other):
         return type(other) == User and self.chat_id == other.chat_id and self.username == other.username
+
+
+def is_organizer(user_id: int):
+    for member in Organizers.objects.all():
+        if member.tg_tag == user_id:
+            return True
+
+    return False
+
+
+def is_admin(user_id: int):
+    if is_organizer(user_id):
+        organizer = Organizers.objects.get(tg_tag=user_id)
+
+        if organizer and organizer.level.level == 'developer':
+            return True
+
+    return False

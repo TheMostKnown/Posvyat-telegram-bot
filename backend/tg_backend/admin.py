@@ -1,15 +1,14 @@
 from django.contrib import admin
 
-from .models import organizers, room, guest, organizer_schedule, guest_schedule, level, broadcast, issue, script, button
+from .models import Organizers, Room, Guest, OrganizerSchedule, GuestSchedule, Level, Broadcast, Issue, Script, Button
 
-
-admin.site.register(organizers)
-admin.site.register(room)
-admin.site.register(guest)
-admin.site.register(organizer_schedule)
-admin.site.register(guest_schedule)
-admin.site.register(level)
-admin.site.register(broadcast)
-admin.site.register(issue)
-admin.site.register(script)
-admin.site.register(button)
+admin.site.register(Organizers)
+admin.site.register(Room)
+admin.site.register(Guest)
+admin.site.register(OrganizerSchedule)
+admin.site.register(GuestSchedule)
+admin.site.register(Level)
+admin.site.register(Broadcast)
+admin.site.register(Issue)
+admin.site.register(Script)
+admin.site.register(Button)
