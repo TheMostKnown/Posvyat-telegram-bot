@@ -1,5 +1,5 @@
-from tgbot.handlers.spreadsheet_parser.spreadsheet_parser import get_data
-from tgbot.config import settings
+from handlers.spreadsheet_parser.spreadsheet_parser import get_data
+from config import settings
 
 
 test_sheets_id = settings.GOOGLE_TABLE_ID

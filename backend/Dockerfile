@@ -26,4 +26,4 @@ RUN chmod +x /usr/src/tg_backend/entrypoint.sh
 COPY . .
 
 # run entrypoint.sh
-ENTRYPOINT ["/usr/src/tg_backend/entrypoint.sh"]
+#ENTRYPOINT ["/usr/src/tg_backend/entrypoint.sh"]

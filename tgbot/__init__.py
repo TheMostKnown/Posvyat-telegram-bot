@@ -1,3 +1,3 @@
-from tgbot import filters
-from tgbot import handlers
-from tgbot import templates
+import filters
+import handlers
+import templates

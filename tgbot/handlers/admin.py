@@ -1,6 +1,6 @@
 import telegram
-from tgbot.filters import filters
-from tgbot.handlers import static_text as st
+from filters import filters
+from handlers import static_text as st
 
 
 
