@@ -6,10 +6,11 @@ from telegram.ext import (
     ChosenInlineResultHandler, PollAnswerHandler,
 )
 
-from . import tg_config
-from . import commands
-from . import admin, commands, organizer, user
+from tgbot.config import settings
+from tgbot.handlers import commands
+from tgbot.handlers import admin, commands, organizer, user
 from tgbot.filters import filters
+
 
 def setup_dispatcher(dp):
     """
@@ -42,7 +43,7 @@ def setup_dispatcher(dp):
 
 def run_pooling():
     """ Run bot in pooling mode """
-    updater = Updater(token=tg_config.TOKEN, use_context=True)
+    updater = Updater(token=settings.TG_TOKEN, use_context=True)
     # dispatcher = updater.dispatcher
 
     dp = updater.dispatcher

@@ -28,3 +28,5 @@ google-api-python-client~=2.55.0
 google-auth~=2.9.1
 google-auth-httplib2~=0.1.0
 google-auth-oauthlib~=0.5.2
+
+Django==3.2.6
