@@ -1,20 +1,28 @@
-# Posvyat-telegram-bot
-***Запуск:***
-```sh
-$ docker-compose build
-$ docker-compose up
-```
-В первый запуск контейнера необходимо провести миграцию, в дальнейшие запуски, если не делать билд заново, этого не потребуется. Для этого выполнить: 
-```sh
-$ docker-compose exec web python manage.py migrate
-```
-Чтобы посмотреть на таблички в красивом интерфейсе, нужно сделать:
-```sh
-$ docker-compose exec web python manage.py createsuperuser
-```
-Создать пользователя, задав ему простые логин и пароль, маил можно оставить пустым.
-После этого можно будет открыть 
-```sh
-$ localhost:8000/admin
-```
-Но это костыль, лучше бы создание суперпользователя автоматизировать с проверкой на существование))
+# Info
+Django Telegram Bot Skeleton.
+
+Based on: https://github.com/ohld/django-telegram-bot/
+
+# Установка
+Проект настроен для деплоя через Dokku. Берем VPS, ставим dokku, создаем приложение там, postgres, redis, git.
+Создаем необходимые переменные окружения:
+
+BUILDPACK_URL:            https://github.com/heroku/heroku-buildpack-python.git#v191
+
+DISABLE_COLLECTSTATIC:    1
+
+DJANGO_DEBUG:             False
+
+DOKKU_LETSENCRYPT_EMAIL:  email@gmail.com
+
+MEDIA_DOMAIN:             https://my_site.com
+
+WEB_DOMAIN:               https://my_site.com
+
+TELEGRAM_TOKEN:           tg_token_from_bot_father
+
+Говорит TG, что будем webhook-ом работать через запрос: 
+
+https://api.telegram.org/bot[ТУТ_ТОКЕН]/setWebhook?url=[ТУТ_URL_WEBHOOK]/super_secter_webhook/
+
+Пушим проект в dokku и готово. Детальнее тут: https://github.com/ohld/django-telegram-bot/wiki/Production-Deployment-using-Dokku

@@ -1,12 +1,17 @@
+staticfiles/*
+!staticfiles/.keep
+
+media/*
+!media/.keep
+
+logs/*
+# exception to the rule
+!logs/.keep
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
-tgbot/handlers/tg_config.py
-
-# IDE directory
-.idea/
 
 # C extensions
 *.so
@@ -114,7 +119,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.env.dev
 
 # Spyder project settings
 .spyderproject
@@ -133,4 +137,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.DS_Store
 
+#PyCharm
+.idea/
+
+#Docker
+.Dockerfile.swp
