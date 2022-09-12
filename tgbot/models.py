@@ -267,10 +267,18 @@ class Broadcast(models.Model):
 
 
 class Issue(models.Model):
-    id = models.IntegerField(primary_key=True)
+    STATUSES = (
+        ('N', 'Not solved'),
+        ('P', 'In progress'),
+        ('F', 'Fixed'),
+    )
+    id = models.AutoField(primary_key=True)
     tg_tag = models.ForeignKey('Organizers', on_delete=models.PROTECT, to_field='tg_tag')
     desc = models.TextField()
-    status = models.CharField(max_length=256)
+    status = models.CharField(max_length=256, choices=STATUSES)
+    
+    def __str__(self):
+        return f"Issue #{self.id}\n Status: {self.status}\n User: t.me/{self.tg_tag}\n\n {self.desc}"
 
 
 class Script(models.Model):

@@ -4,7 +4,8 @@ import telegram
 from django.utils.timezone import now
 
 from tgbot.handlers import static_text as st
-from tgbot.models import User
+from tgbot.models import User, Issue
+from tgbot.utils import extract_user_data_from_update
 
 
 def admin(update, context):
@@ -32,4 +33,12 @@ def stats(update, context):
         parse_mode=telegram.ParseMode.MARKDOWN,
         disable_web_page_preview=True,
     )
-    
+
+def get_issues(update, context):
+    u = User.get_user(update, context)
+    user_id = extract_user_data_from_update(update)['user_id']
+    if not u.is_admin:
+        return
+    issues_query = Issue.objects.exclude(status='Fixed')
+    for temp in issues_query:
+        context.bot.send_message(user_id, text=temp)

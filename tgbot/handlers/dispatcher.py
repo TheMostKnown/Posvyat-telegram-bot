@@ -9,6 +9,7 @@ from telegram.ext import (
     CommandHandler, MessageHandler,
     InlineQueryHandler, CallbackQueryHandler,
     ChosenInlineResultHandler, PollAnswerHandler,
+    ConversationHandler,
 )
 
 # from celery.decorators import task  # event processing in async mode
@@ -20,7 +21,7 @@ from tgbot.handlers.commands import broadcast_command_with_message
 from tgbot.handlers import handlers as hnd
 from tgbot.handlers import manage_data as md
 from tgbot.handlers.static_text import broadcast_command
-
+from tgbot.handlers.manage_data import ISSUE_MESSAGE_WAITING
 
 def setup_dispatcher(dp):
     """
@@ -52,6 +53,17 @@ def setup_dispatcher(dp):
 
     dp.add_handler(MessageHandler(Filters.regex(rf'^{broadcast_command} .*'), broadcast_command_with_message))
     dp.add_handler(CallbackQueryHandler(hnd.broadcast_decision_handler, pattern=f"^{md.CONFIRM_DECLINE_BROADCAST}"))
+
+    dp.add_handler(ConversationHandler(
+        # точка входа
+        entry_points=[CommandHandler('support', commands.issue)],
+        states={
+            ISSUE_MESSAGE_WAITING: [MessageHandler(Filters.text & ~Filters.command, commands.issue_message)],
+        },
+        # точка выхода из разговора
+        fallbacks=[CommandHandler('cancel', ConversationHandler.END)],
+    ))
+
 
     # EXAMPLES FOR HANDLERS
     # dp.add_handler(MessageHandler(Filters.text, <function_handler>))

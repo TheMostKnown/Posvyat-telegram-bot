@@ -4,13 +4,15 @@ import datetime
 import logging
 import re
 import telegram
+from telegram.ext import ConversationHandler
 
 from django.utils import timezone
 from tgbot.handlers import static_text
-from tgbot.models import User
+from tgbot.models import User, Issue
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers.keyboard_utils import make_keyboard_for_start_command, keyboard_confirm_decline_broadcasting
 from tgbot.handlers.utils import handler_logging
+from manage_data import ISSUE_MESSAGE_WAITING
 
 logger = logging.getLogger('default')
 logger.info("Command handlers check!")
@@ -88,3 +90,24 @@ def broadcast_command_with_message(update, context):
             text=text_error,
             chat_id=user_id
         )
+
+def issue(update, context):
+    u = User.get_user(update, context)
+    if u.is_blocked:
+        return ConversationHandler.END
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=static_text.support_start
+    )
+    return ISSUE_MESSAGE_WAITING
+
+def issue_message(update, context):
+    # тут добавление сообщения в бд
+    Issue(tg_tag = update.message.from_user['username'],
+                desc = update.message.text,
+                status = 'N').save()
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=static_text.support_send
+    )
+    return ConversationHandler.END

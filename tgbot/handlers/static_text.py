@@ -19,3 +19,5 @@ error_with_markdown = "Невозможно обработать ваш текс
 specify_word_with_error = " У вас ошибка в слове "
 secret_admin_commands = "⚠️ Секретные команды администратора\n" \
                         "/stats - bot stats"
+support_start = "Опиши свою проблему ОДНИМ СООБЩЕНИЕМ или /cancel"
+support_send = "Ваша сообщение отправлено в техподдержки, с вами скоро свяжутся"
