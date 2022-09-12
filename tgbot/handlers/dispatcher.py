@@ -53,7 +53,8 @@ def setup_dispatcher(dp):
 
     dp.add_handler(MessageHandler(Filters.regex(rf'^{broadcast_command} .*'), broadcast_command_with_message))
     dp.add_handler(CallbackQueryHandler(hnd.broadcast_decision_handler, pattern=f"^{md.CONFIRM_DECLINE_BROADCAST}"))
-
+    
+    dp.add_handler(CommandHandler("get_issues", admin.get_issues))
     dp.add_handler(ConversationHandler(
         # точка входа
         entry_points=[CommandHandler('support', commands.issue)],
