@@ -11,8 +11,8 @@ from tgbot.handlers import static_text as st
 from tgbot.handlers import manage_data as md
 from tgbot.handlers import keyboard_utils as kb
 from tgbot.handlers.utils import handler_logging
-from tgbot.models import User
-from tgbot.utils import convert_2_user_time, extract_user_data_from_update, get_chat_id
+from tgbot.models import Issue, User
+from tgbot.utils import convert_2_user_time, extract_user_data_from_update, get_chat_id, str_between_symb
 
 logger = logging.getLogger('default')
 
@@ -122,4 +122,18 @@ def broadcast_decision_handler(update, context): #callback_data: CONFIRM_DECLINE
         chat_id=update.callback_query.message.chat_id,
         message_id=update.callback_query.message.message_id,
         entities=None if broadcast_decision == md.CONFIRM_BROADCAST else entities
+    )
+
+def btn_set_status(update, context):
+    issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n')) #Cringe...
+    new_status = update.callback_query.data
+    issue = Issue.objects.get(id = issue_id)
+    issue.status = new_status
+    issue.save()
+    context.bot.edit_message_text(
+        text=str(issue),
+        chat_id=update.callback_query.message.chat_id,
+        message_id=update.callback_query.message.message_id,
+        reply_markup = kb.keyboard_issue_set_status(new_status),
+        link_preview = False,
     )

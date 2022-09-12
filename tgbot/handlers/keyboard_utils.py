@@ -38,4 +38,13 @@ def keyboard_confirm_decline_broadcasting():
 
     return InlineKeyboardMarkup(buttons)
 
+def keyboard_issue_set_status(status):
+    buttons = [[]]
+    if status != "N":
+        buttons[0].append(InlineKeyboardButton(st.btn_not_fx, callback_data=md.SET_NOT_FIXED))
+    if status != "P":
+        buttons[0].append(InlineKeyboardButton(st.btn_in_progress, callback_data=md.SET_IN_PROGRESS))
+    if status != "F":
+        buttons[0].append(InlineKeyboardButton(st.btn_fixed, callback_data=md.SET_FIXED))
+    return InlineKeyboardMarkup(buttons)
 

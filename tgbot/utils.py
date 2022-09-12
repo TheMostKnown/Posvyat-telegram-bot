@@ -64,3 +64,16 @@ def convert_2_user_time(date: datetime.datetime):
     """Получает дату в UTC. Возвращает в Мск."""
 
     return date + datetime.timedelta(hours=3)
+
+def str_between_symb(str, symb1, symb2):
+    result = ""
+    flag = False
+    for i in range(len(str)):
+        if str[i] == symb1:
+            flag = True
+            continue
+        if str[i] == symb2:
+            break
+        if flag:
+            result += str[i]
+    return result
