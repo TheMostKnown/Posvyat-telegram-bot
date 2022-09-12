@@ -207,7 +207,7 @@ class UserActionLog(models.Model):
 
 
 class Organizers(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     level = models.ForeignKey('Level', on_delete=models.PROTECT)
     room = models.ForeignKey('Room', on_delete=models.PROTECT)
     surname = models.CharField(max_length=20)
@@ -225,7 +225,7 @@ class Room(models.Model):
 
 
 class Guest(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     level = models.ForeignKey('Level', on_delete=models.PROTECT)
     surname = models.CharField(max_length=20)
     name = models.CharField(max_length=20)
@@ -239,7 +239,7 @@ class Guest(models.Model):
 
 
 class OrganizerSchedule(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     tg_tag = models.ForeignKey('Organizers', on_delete=models.PROTECT, to_field='tg_tag', related_name='tg_tag1')
     desc = models.CharField(max_length=20)
     start_time = models.TimeField(auto_now=False, auto_now_add=False)
@@ -248,19 +248,19 @@ class OrganizerSchedule(models.Model):
 
 
 class GuestSchedule(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     desc = models.CharField(max_length=20)
     start_time = models.TimeField(auto_now=False, auto_now_add=False)
     end_time = models.TimeField(auto_now=False, auto_now_add=False)
 
 
 class Level(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     level = models.CharField(max_length=15)
 
 
 class Broadcast(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     level = models.ForeignKey('Level', on_delete=models.PROTECT)
     title = models.CharField(max_length=30)
     text = models.TextField()
@@ -273,22 +273,22 @@ class Issue(models.Model):
         ('F', 'Fixed'),
     )
     id = models.AutoField(primary_key=True)
-    tg_tag = models.ForeignKey('Organizers', on_delete=models.PROTECT, to_field='tg_tag')
+    tg_tag = models.CharField(max_length=20)
     desc = models.TextField()
-    status = models.CharField(max_length=256, choices=STATUSES)
+    status = models.CharField(max_length=256, choices=STATUSES, default='N')
     
     def __str__(self):
-        return f"Issue #{self.id}\n Status: {self.status}\n User: t.me/{self.tg_tag}\n\n {self.desc}"
+        return f"Issue #{self.id}\nStatus: {self.status}\nUser: t.me/{self.tg_tag}\n\n {self.desc}"
 
 
 class Script(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     head = models.TextField()
     text = models.TextField()
 
 
 class Button(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     title_from = models.CharField(max_length=256)
     title_to = models.CharField(max_length=256)
     text = models.TextField()

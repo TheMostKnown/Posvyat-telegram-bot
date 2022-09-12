@@ -62,7 +62,7 @@ def setup_dispatcher(dp):
             ISSUE_MESSAGE_WAITING: [MessageHandler(Filters.text & ~Filters.command, commands.issue_message)],
         },
         # точка выхода из разговора
-        fallbacks=[CommandHandler('cancel', ConversationHandler.END)],
+        fallbacks=[CommandHandler('cancel', commands.issue_cancel)],
     ))
 
 

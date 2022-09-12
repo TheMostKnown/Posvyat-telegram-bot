@@ -21,3 +21,4 @@ secret_admin_commands = "⚠️ Секретные команды админис
                         "/stats - bot stats"
 support_start = "Опиши свою проблему ОДНИМ СООБЩЕНИЕМ или /cancel"
 support_send = "Ваша сообщение отправлено в техподдержки, с вами скоро свяжутся"
+support_cancel = "Canceled"
