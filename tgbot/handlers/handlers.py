@@ -125,8 +125,8 @@ def broadcast_decision_handler(update, context): #callback_data: CONFIRM_DECLINE
     )
 
 def btn_set_status(update, context):
-    issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n')) #Cringe...
     new_status = update.callback_query.data
+    issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n')) #Cringe...
     issue = Issue.objects.get(id = issue_id)
     issue.status = new_status
     issue.save()
@@ -135,5 +135,20 @@ def btn_set_status(update, context):
         chat_id=update.callback_query.message.chat_id,
         message_id=update.callback_query.message.message_id,
         reply_markup = kb.keyboard_issue_set_status(new_status),
-        link_preview = False,
+        disable_web_page_preview = True,
     )
+
+def btn_get_issues_from_user(update, context):
+    issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n'))
+    user_tag = Issue.objects.get(id = issue_id).tg_tag
+    issues_query = Issue.objects.filter(tg_tag = user_tag).exclude(status = md.SET_FIXED)
+    if issues_query.count() == 0:
+        return context.bot.send_message(chat_id = update.effective_chat.id, text = st.no_unsolved_issue)
+    context.bot.send_message(chat_id = update.effective_chat.id, text = st.users_issues_intro)
+    for issue in issues_query:
+        context.bot.send_message(
+            text=str(issue),
+            chat_id=update.callback_query.message.chat_id,
+            reply_markup = kb.keyboard_issue_set_status(issue.status),
+            disable_web_page_preview = True,
+        )

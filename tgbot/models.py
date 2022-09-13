@@ -272,13 +272,18 @@ class Issue(models.Model):
         ('P', 'In progress'),
         ('F', 'Fixed'),
     )
+    stat_dict = {
+        "N": "Not solved",
+        "P": "In progress",
+        "F": "Fixed"
+    }
     id = models.AutoField(primary_key=True)
     tg_tag = models.CharField(max_length=20)
     desc = models.TextField()
     status = models.CharField(max_length=256, choices=STATUSES, default='N')
     
     def __str__(self):
-        return f"Issue #{self.id}\nStatus: {self.status}\nUser: t.me/{self.tg_tag}\n\n {self.desc}"
+        return f"Issue #{self.id}\n\n{self.stat_dict[self.status]}\n\n{self.desc}\n\nuser: t.me/{self.tg_tag}"
 
 
 class Script(models.Model):

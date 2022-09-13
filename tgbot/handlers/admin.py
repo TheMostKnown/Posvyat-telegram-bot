@@ -35,17 +35,17 @@ def stats(update, context):
     )
 
 def get_issues(update, context):
-    DESC_LIMIT = 20
+    DESC_LIMIT = 40
     u = User.get_user(update, context)
     user_id = extract_user_data_from_update(update)['user_id']
     #if not u.is_admin:
     #    return
     if len(context.args) == 0:
-        issues_query = Issue.objects.exclude(status='Fixed')
+        issues_query = Issue.objects.exclude(status='F').order_by('id')
         text = ""
         for temp in issues_query:
-            text += (str(temp.id) + " " + temp.desc[:DESC_LIMIT])
-            if temp.desc.len() > DESC_LIMIT:
+            text += (str(temp.id) + ". " + temp.desc[:DESC_LIMIT])
+            if len(temp.desc) > DESC_LIMIT:
                 text += "..."
             text += "\n"
         context.bot.send_message(user_id, text=text)
@@ -58,8 +58,8 @@ def get_issues(update, context):
             return context.bot.send_message(user_id, text=st.error_no_issue)
         context.bot.send_message(
             user_id, text=str(current_issue),
-            link_preview = False,
-            reply_markup = kb.keyboard_issue_set_status(current_issue.id)
+            disable_web_page_preview = True,
+            reply_markup = kb.keyboard_issue_set_status(current_issue.status),
         )
         
 

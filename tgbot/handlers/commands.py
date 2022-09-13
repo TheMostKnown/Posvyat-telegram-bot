@@ -12,7 +12,7 @@ from tgbot.models import User, Issue, Room
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers.keyboard_utils import make_keyboard_for_start_command, keyboard_confirm_decline_broadcasting
 from tgbot.handlers.utils import handler_logging
-from tgbot.handlers.manage_data import ISSUE_MESSAGE_WAITING
+from tgbot.handlers import manage_data as md
 
 logger = logging.getLogger('default')
 logger.info("Command handlers check!")
@@ -95,11 +95,17 @@ def issue(update, context):
     u = User.get_user(update, context)
     if u.is_banned:
         return ConversationHandler.END
+    if Issue.objects.filter(tg_tag = u.username).exclude(status = md.SET_FIXED).count() >= 3:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=static_text.issue_limit
+        )
+        return ConversationHandler.END
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=static_text.support_start
     )
-    return ISSUE_MESSAGE_WAITING
+    return md.ISSUE_MESSAGE_WAITING
 
 def issue_message(update, context):
     # тут добавление сообщения в бд
