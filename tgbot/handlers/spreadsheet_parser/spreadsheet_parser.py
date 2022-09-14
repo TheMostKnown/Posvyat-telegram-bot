@@ -94,11 +94,8 @@ def get_data(
                         if value and 'formattedValue' in value.keys():
                             row['values'][j] = value['formattedValue']
                         else:
-                            row['values'][j] = None
+                            row['values'][j] = ''
 
                     tables[sheet_title].append(row['values'])
-
-                else:
-                    tables[sheet_title].append(None)
 
     return tables

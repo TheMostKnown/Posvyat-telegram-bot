@@ -206,81 +206,88 @@ class UserActionLog(models.Model):
         return f"user: {self.user}, made: {self.action}, created at {self.created_at.strftime('(%H:%M, %d %B %Y)')}"
 
 
-class Organizers(models.Model):
-    id = models.IntegerField(primary_key=True)
-    level = models.ForeignKey('Level', on_delete=models.PROTECT)
-    room = models.ForeignKey('Room', on_delete=models.PROTECT)
-    surname = models.CharField(max_length=20)
-    name = models.CharField(max_length=20)
-    patronymic = models.CharField(max_length=20)
-    tg_tag = models.CharField(max_length=20, unique=True)
-    phone = models.CharField(max_length=12)
+class Organizer(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    surname = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
+    patronymic = models.CharField(max_length=256)
+    tg_tag = models.CharField(max_length=256, unique=True)
+    phone = models.CharField(max_length=256)
+    room = models.CharField(max_length=256)
+    levels = models.CharField(max_length=256)
     department = models.TextField()
     texts = models.TextField()
 
 
 class Room(models.Model):
-    number = models.CharField(max_length=4, primary_key=True)
+    number = models.CharField(max_length=256, primary_key=True)
     capacity = models.IntegerField()
 
 
 class Guest(models.Model):
-    id = models.IntegerField(primary_key=True)
-    level = models.ForeignKey('Level', on_delete=models.PROTECT)
-    surname = models.CharField(max_length=20)
-    name = models.CharField(max_length=20)
-    patronymic = models.CharField(max_length=20)
-    phone = models.CharField(max_length=12)
-    room = models.ForeignKey('Room', on_delete=models.PROTECT)
-    tg_tag = models.CharField(max_length=20, unique=True)
-    vk_link = models.CharField(max_length=20)
+    id = models.BigAutoField(primary_key=True)
+    surname = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
+    patronymic = models.CharField(max_length=256)
+    tg_tag = models.CharField(max_length=256, unique=True)
+    vk_link = models.CharField(max_length=256)
+    phone = models.CharField(max_length=256)
+    levels = models.CharField(max_length=256)
+    room = models.CharField(max_length=256)
     texts = models.TextField()
-    team = models.IntegerField()
+    team = models.CharField(max_length=256)
 
 
 class OrganizerSchedule(models.Model):
-    id = models.IntegerField(primary_key=True)
-    tg_tag = models.ForeignKey('Organizers', on_delete=models.PROTECT, to_field='tg_tag', related_name='tg_tag1')
-    desc = models.CharField(max_length=20)
-    start_time = models.TimeField(auto_now=False, auto_now_add=False)
-    finish_time = models.TimeField(auto_now=False, auto_now_add=False)
-    changer = models.ForeignKey('Organizers', on_delete=models.PROTECT, to_field='tg_tag', related_name='tg_tag2')
+    id = models.BigAutoField(primary_key=True)
+    desc = models.CharField(max_length=256)
+    tg_tag = models.CharField(max_length=256)
+    start_time = models.CharField(max_length=256)
+    finish_time = models.CharField(max_length=256)
 
 
 class GuestSchedule(models.Model):
-    id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=20)
-    start_time = models.TimeField(auto_now=False, auto_now_add=False)
-    end_time = models.TimeField(auto_now=False, auto_now_add=False)
+    id = models.BigAutoField(primary_key=True)
+    desc = models.CharField(max_length=256)
+    start_time = models.CharField(max_length=256)
+    finish_time = models.CharField(max_length=256)
 
 
 class Level(models.Model):
-    id = models.IntegerField(primary_key=True)
-    level = models.CharField(max_length=15)
+    id = models.BigAutoField(primary_key=True)
+    level = models.CharField(max_length=256)
 
 
 class Broadcast(models.Model):
-    id = models.IntegerField(primary_key=True)
-    level = models.ForeignKey('Level', on_delete=models.PROTECT)
-    title = models.CharField(max_length=30)
+    id = models.BigAutoField(primary_key=True)
+    title = models.CharField(max_length=256)
     text = models.TextField()
+    levels = models.CharField(max_length=256)
 
 
 class Issue(models.Model):
-    id = models.IntegerField(primary_key=True)
-    tg_tag = models.ForeignKey('Organizers', on_delete=models.PROTECT, to_field='tg_tag')
+    id = models.BigAutoField(primary_key=True)
+    tg_tag = models.CharField(max_length=256)
     desc = models.TextField()
     status = models.CharField(max_length=256)
 
 
 class Script(models.Model):
-    id = models.IntegerField(primary_key=True)
-    head = models.TextField()
+    id = models.BigAutoField(primary_key=True)
+    title = models.TextField()
     text = models.TextField()
 
 
 class Button(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
+    text = models.TextField()
     title_from = models.CharField(max_length=256)
     title_to = models.CharField(max_length=256)
-    text = models.TextField()
+
+
+class Command(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=256)
+    arguments = models.CharField(max_length=256)
+    desc = models.CharField(max_length=256)
+    admin = models.CharField(max_length=256)
