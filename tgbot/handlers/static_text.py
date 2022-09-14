@@ -20,10 +20,11 @@ specify_word_with_error = " У вас ошибка в слове "
 secret_admin_commands = "⚠️ Секретные команды администратора\n" \
                         "/stats - bot stats" \
                         "/get_iss - list of unsolved issues" \
-                        "/get_iss <number> - full description of issue with user's contact"
+                        "/get_iss <number> - full description of issue with user's contact" \
+                        "/delete_issues - delete all unsolved issues from DB"
 support_start = "Опиши свою проблему ОДНИМ СООБЩЕНИЕМ или нажми /cancel если передумал"
 support_send = "Ваша сообщение отправлено в техподдержки, с вами скоро свяжутся"
-support_cancel = "Canceled"
+support_cancel = "Отправка сообщения в техподдержку отменена"
 error_issue_arg = "Неверное значение аргумента. Убедитесь, что аргумент -- целое положительное число"
 error_no_issue = "Нет сообщения с данным номером"
 error_no_unsolved_issue = "Нет нерешенных проблем"
@@ -38,3 +39,7 @@ users_issues_intro = "Все нерешенные проблемы пользо�
 set_all_issues = "Fix user's all issues"
 set_current_issue = "Fix only current"
 set_all_success = "Статусы всех проблем user'a успешно изменены"
+
+delete_issues_choose = "Вы уверены, что хотите удалить записи?"
+delete_issues_success = "Записи успешно удалены"
+delete_issues_declined = "Действие отменено"

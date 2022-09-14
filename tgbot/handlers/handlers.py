@@ -182,3 +182,19 @@ def btn_get_issues_from_user(update, context):
             reply_markup = kb.keyboard_issue_set_status(issue.status),
             disable_web_page_preview = True,
         )
+
+def btn_delete_issues(update, context):
+    decision = update.callback_query.data
+    if decision == md.CONFIRM_DELETING:
+        Issue.objects.filter(status=md.SET_FIXED).delete()
+        context.bot.edit_message_text(
+            text=st.delete_issues_success,
+            chat_id=update.callback_query.message.chat_id,
+            message_id=update.callback_query.message.message_id,
+        )
+    if decision == md.DECLINE_DELETING:
+        context.bot.edit_message_text(
+            text=st.delete_issues_declined,
+            chat_id=update.callback_query.message.chat_id,
+            message_id=update.callback_query.message.message_id,
+        )

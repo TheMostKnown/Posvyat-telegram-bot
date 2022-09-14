@@ -95,12 +95,15 @@ def issue(update, context):
     u = User.get_user(update, context)
     if u.is_banned:
         return ConversationHandler.END
+
+    # spam-filter
     if Issue.objects.filter(tg_tag = u.username).exclude(status = md.SET_FIXED).count() >= 3:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=static_text.issue_limit
         )
         return ConversationHandler.END
+    
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=static_text.support_start

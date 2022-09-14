@@ -57,3 +57,11 @@ def keyboard_all_onlyone_issue():
     ]
 
     return InlineKeyboardMarkup(buttons)
+
+def keyboard_confirm_delete_issue():
+    buttons = [[
+        InlineKeyboardButton(st.confirm_broadcast, callback_data=f'{md.CONFIRM_DELETING}'),
+        InlineKeyboardButton(st.decline_broadcast, callback_data=f'{md.DECLINE_DELETING}'),
+    ]]
+    
+    return InlineKeyboardMarkup(buttons)

@@ -7,6 +7,7 @@ from tgbot.handlers import static_text as st
 from tgbot.models import User, Issue
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers import keyboard_utils as kb
+from tgbot.handlers import manage_data as md
 
 def admin(update, context):
     """ Show help info about all secret admins commands """
@@ -35,13 +36,20 @@ def stats(update, context):
     )
 
 def get_issues(update, context):
+    """" Shows list of unsolved issues in format:
+        issue_number -- first DESC_LIMIT symbols of description
+
+        Shows issue's full info you use command with issue's number as argument
+        It also allows to change its status with the buttons
+    """
     DESC_LIMIT = 40
+
     u = User.get_user(update, context)
     user_id = extract_user_data_from_update(update)['user_id']
     if not u.is_admin:
         return
     if len(context.args) == 0:
-        issues_query = Issue.objects.exclude(status='F').order_by('id')
+        issues_query = Issue.objects.exclude(status=md.SET_FIXED).order_by('id')
         text = ""
         if issues_query.count() == 0:
             text = st.error_no_unsolved_issue
@@ -64,4 +72,14 @@ def get_issues(update, context):
             reply_markup = kb.keyboard_issue_set_status(current_issue.status),
         )
         
+def delete_issues(update, context):
+    """Deletes all solved issues from DataBase"""
+    u = User.get_user(update, context)
+    user_id = extract_user_data_from_update(update)['user_id']
+    if not u.is_admin:
+        return
+    context.bot.send_message(
+        user_id, text=st.delete_issues_choose,
+        reply_markup = kb.keyboard_confirm_delete_issue(),
+    )
 
