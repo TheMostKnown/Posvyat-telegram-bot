@@ -138,6 +138,36 @@ def btn_set_status(update, context):
         disable_web_page_preview = True,
     )
 
+def btn_all_one_issue(update, context):
+    issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n'))
+    issue = Issue.objects.get(id = issue_id)
+    context.bot.edit_message_text(
+        text=str(issue),
+        chat_id=update.callback_query.message.chat_id,
+        message_id=update.callback_query.message.message_id,
+        reply_markup = kb.keyboard_all_onlyone_issue(),
+        disable_web_page_preview = True,
+    )
+
+def btn_set_all_issues(update, context):
+    issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n'))
+    issue = Issue.objects.get(id = issue_id)
+    issues_query = Issue.objects.filter(tg_tag = issue.tg_tag).exclude(status = md.SET_FIXED)
+    issues_query.update(status = md.SET_FIXED)
+    issue.status = md.SET_FIXED
+    context.bot.edit_message_text(
+        text=str(issue),
+        chat_id=update.callback_query.message.chat_id,
+        message_id=update.callback_query.message.message_id,
+        reply_markup = kb.keyboard_issue_set_status(md.SET_FIXED),
+        disable_web_page_preview = True,
+    )
+    context.bot.answer_callback_query(
+        callback_query_id = update.callback_query.id,
+        text = st.set_all_success
+    )
+
+
 def btn_get_issues_from_user(update, context):
     issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n'))
     user_tag = Issue.objects.get(id = issue_id).tg_tag

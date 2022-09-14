@@ -38,11 +38,13 @@ def get_issues(update, context):
     DESC_LIMIT = 40
     u = User.get_user(update, context)
     user_id = extract_user_data_from_update(update)['user_id']
-    #if not u.is_admin:
-    #    return
+    if not u.is_admin:
+        return
     if len(context.args) == 0:
         issues_query = Issue.objects.exclude(status='F').order_by('id')
         text = ""
+        if issues_query.count() == 0:
+            text = st.error_no_unsolved_issue
         for temp in issues_query:
             text += (str(temp.id) + ". " + temp.desc[:DESC_LIMIT])
             if len(temp.desc) > DESC_LIMIT:

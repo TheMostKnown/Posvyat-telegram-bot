@@ -54,8 +54,11 @@ def setup_dispatcher(dp):
     dp.add_handler(MessageHandler(Filters.regex(rf'^{broadcast_command} .*'), broadcast_command_with_message))
     dp.add_handler(CallbackQueryHandler(hnd.broadcast_decision_handler, pattern=f"^{md.CONFIRM_DECLINE_BROADCAST}"))
     
-    dp.add_handler(CommandHandler("get_issues", admin.get_issues))
-    dp.add_handler(CallbackQueryHandler(hnd.btn_set_status, pattern=f'^{md.SET_FIXED}|{md.SET_IN_PROGRESS}|{md.SET_NOT_FIXED}'))
+    # issues
+    dp.add_handler(CommandHandler("get_iss", admin.get_issues))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_set_status, pattern=f'^{md.SET_IN_PROGRESS}|{md.SET_NOT_FIXED}|{md.SET_FIXED}'))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_all_one_issue, pattern=f'^{md.SET_ONE_OR_ALL_ISS}'))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_set_all_issues, pattern=f'^{md.SET_ALL_ISS}'))
     dp.add_handler(CallbackQueryHandler(hnd.btn_get_issues_from_user, pattern=f'^{md.GET_ALL_ISS}'))
     dp.add_handler(ConversationHandler(
         # точка входа

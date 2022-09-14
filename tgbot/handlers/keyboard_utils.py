@@ -45,7 +45,15 @@ def keyboard_issue_set_status(status):
     if status != "P":
         buttons[0].append(InlineKeyboardButton(st.btn_in_progress, callback_data=md.SET_IN_PROGRESS))
     if status != "F":
-        buttons[0].append(InlineKeyboardButton(st.btn_fixed, callback_data=md.SET_FIXED))
+        buttons[0].append(InlineKeyboardButton(st.btn_fixed, callback_data=md.SET_ONE_OR_ALL_ISS))
     buttons[1].append(InlineKeyboardButton(st.btn_all_from_user, callback_data=md.GET_ALL_ISS))
+
     return InlineKeyboardMarkup(buttons)
 
+def keyboard_all_onlyone_issue():
+    buttons = [
+        [InlineKeyboardButton(st.set_current_issue, callback_data=f'{md.SET_FIXED}')],
+        [InlineKeyboardButton(st.set_all_issues, callback_data=f'{md.SET_ALL_ISS}')]
+    ]
+
+    return InlineKeyboardMarkup(buttons)
