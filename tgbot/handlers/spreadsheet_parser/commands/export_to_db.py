@@ -95,17 +95,16 @@ def get_init_data(
                 ).save()
 
     # getting info about users with admin rights
-    organizers_sheet = spreadsheet['Organizers']
+    organizers_sheet = spreadsheet['OrganizerSchedule']
 
     for i in range(1, len(organizers_sheet)):
         surname = organizers_sheet[i][0]
         name = organizers_sheet[i][1]
-        patronymic = organizers_sheet[i][2]
         tg_tag = organizers_sheet[i][3]
-        phone = organizers_sheet[i][4]
-        room = organizers_sheet[i][5]
-        levels = organizers_sheet[i][6]
-        department = organizers_sheet[i][7]
+        vk_link = organizers_sheet[i][4]
+        phone = organizers_sheet[i][5]
+        department = organizers_sheet[i][6]
+        room = organizers_sheet[i][7]
 
         if tg_tag != '':
 
@@ -116,10 +115,9 @@ def get_init_data(
 
                 organizer.surname = surname
                 organizer.name = name
-                organizer.patronymic = patronymic
+                organizer.vk_link = vk_link
                 organizer.phone = phone
-                organizer.room = room,
-                organizer.levels = f'[{levels}]'
+                organizer.room = room
                 organizer.department = department
 
                 organizer.save()
@@ -127,11 +125,10 @@ def get_init_data(
                 Organizer(
                     surname=surname,
                     name=name,
-                    patronymic=patronymic,
                     tg_tag=tg_tag,
+                    vk_link=vk_link,
                     phone=phone,
                     room=room,
-                    levels=levels,
                     department=department,
                     texts=json.dumps([])
                 ).save()
@@ -208,11 +205,11 @@ def get_init_data(
     organizers_schedule_sheet = spreadsheet['OrganizerSchedule']
 
     for i in range(1, len(organizers_schedule_sheet)):
-        tg_tag = organizers_schedule_sheet[i][1]
+        tg_tag = organizers_schedule_sheet[i][2]
 
         org_schedule = OrganizerSchedule.objects.filter(tg_tag=tg_tag)
 
-        for j in range(6, len(organizers_schedule_sheet[i])):
+        for j in range(9, len(organizers_schedule_sheet[i])):
             desc = organizers_schedule_sheet[i][j]
 
             if desc != '':
