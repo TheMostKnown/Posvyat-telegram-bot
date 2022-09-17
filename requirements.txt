@@ -50,3 +50,6 @@ google-auth-httplib2~=0.1.0
 google-auth-oauthlib~=0.5.2
 telegram~=0.0.1
 typing~=3.7.4.3
+
+# Algorithms
+git+https://github.com/ylptred/autocorrect@master
