@@ -130,7 +130,6 @@ def get_init_data(
                     phone=phone,
                     room=room,
                     department=department,
-                    texts=json.dumps([])
                 ).save()
 
     # getting info about participants
