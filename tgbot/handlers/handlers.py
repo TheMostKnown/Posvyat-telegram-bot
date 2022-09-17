@@ -124,74 +124,91 @@ def broadcast_decision_handler(update, context): #callback_data: CONFIRM_DECLINE
         entities=None if broadcast_decision == md.CONFIRM_BROADCAST else entities
     )
 
+
 def btn_set_status(update, context):
     new_status = update.callback_query.data
     issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n')) #Cringe...
-    issue = Issue.objects.get(id = issue_id)
+
+    issue = Issue.objects.get(id=issue_id)
     issue.status = new_status
     issue.save()
+
     context.bot.edit_message_text(
         text=str(issue),
         chat_id=update.callback_query.message.chat_id,
         message_id=update.callback_query.message.message_id,
-        reply_markup = kb.keyboard_issue_set_status(new_status),
-        disable_web_page_preview = True,
+        reply_markup=kb.keyboard_issue_set_status(new_status),
+        disable_web_page_preview=True,
     )
+
 
 def btn_all_one_issue(update, context):
     issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n'))
-    issue = Issue.objects.get(id = issue_id)
+    issue = Issue.objects.get(id=issue_id)
+
     context.bot.edit_message_text(
         text=str(issue),
         chat_id=update.callback_query.message.chat_id,
         message_id=update.callback_query.message.message_id,
-        reply_markup = kb.keyboard_all_onlyone_issue(),
-        disable_web_page_preview = True,
+        reply_markup=kb.keyboard_all_only_one_issue(),
+        disable_web_page_preview=True,
     )
+
 
 def btn_set_all_issues(update, context):
     issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n'))
-    issue = Issue.objects.get(id = issue_id)
-    issues_query = Issue.objects.filter(tg_tag = issue.tg_tag).exclude(status = md.SET_FIXED)
-    issues_query.update(status = md.SET_FIXED)
+
+    issue = Issue.objects.get(id=issue_id)
+    issues_query = Issue.objects.filter(tg_tag=issue.tg_tag).exclude(status=md.SET_FIXED)
+    issues_query.update(status=md.SET_FIXED)
     issue.status = md.SET_FIXED
+
     context.bot.edit_message_text(
         text=str(issue),
         chat_id=update.callback_query.message.chat_id,
         message_id=update.callback_query.message.message_id,
-        reply_markup = kb.keyboard_issue_set_status(md.SET_FIXED),
-        disable_web_page_preview = True,
+        reply_markup=kb.keyboard_issue_set_status(md.SET_FIXED),
+        disable_web_page_preview=True,
     )
+
     context.bot.answer_callback_query(
-        callback_query_id = update.callback_query.id,
-        text = st.set_all_success
+        callback_query_id=update.callback_query.id,
+        text=st.set_all_success
     )
 
 
 def btn_get_issues_from_user(update, context):
     issue_id = int(str_between_symb(update.callback_query.message.text, '#', '\n'))
-    user_tag = Issue.objects.get(id = issue_id).tg_tag
-    issues_query = Issue.objects.filter(tg_tag = user_tag).exclude(status = md.SET_FIXED)
+
+    user_tag = Issue.objects.get(id=issue_id).tg_tag
+    issues_query = Issue.objects.filter(tg_tag=user_tag).exclude(status=md.SET_FIXED)
+
     if issues_query.count() == 0:
-        return context.bot.send_message(chat_id = update.effective_chat.id, text = st.no_unsolved_issue)
-    context.bot.send_message(chat_id = update.effective_chat.id, text = st.users_issues_intro)
+        return context.bot.send_message(chat_id=update.effective_chat.id, text=st.no_unsolved_issue)
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text=st.users_issues_intro)
+
     for issue in issues_query:
         context.bot.send_message(
             text=str(issue),
             chat_id=update.callback_query.message.chat_id,
-            reply_markup = kb.keyboard_issue_set_status(issue.status),
-            disable_web_page_preview = True,
+            reply_markup=kb.keyboard_issue_set_status(issue.status),
+            disable_web_page_preview=True,
         )
+
 
 def btn_delete_issues(update, context):
     decision = update.callback_query.data
+
     if decision == md.CONFIRM_DELETING:
         Issue.objects.filter(status=md.SET_FIXED).delete()
+
         context.bot.edit_message_text(
             text=st.delete_issues_success,
             chat_id=update.callback_query.message.chat_id,
             message_id=update.callback_query.message.message_id,
         )
+
     if decision == md.DECLINE_DELETING:
         context.bot.edit_message_text(
             text=st.delete_issues_declined,

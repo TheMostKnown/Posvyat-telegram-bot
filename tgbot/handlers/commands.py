@@ -91,13 +91,15 @@ def broadcast_command_with_message(update, context):
             chat_id=user_id
         )
 
+
 def issue(update, context):
-    u = User.get_user(update, context)
-    if u.is_banned:
+    user = User.get_user(update, context)
+
+    if user.is_banned:
         return ConversationHandler.END
 
     # spam-filter
-    if Issue.objects.filter(tg_tag = u.username).exclude(status = md.SET_FIXED).count() >= 3:
+    if Issue.objects.filter(tg_tag=user.username).exclude(status=md.SET_FIXED).count() >= 3:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=static_text.issue_limit
@@ -110,15 +112,20 @@ def issue(update, context):
     )
     return md.ISSUE_MESSAGE_WAITING
 
+
 def issue_message(update, context):
     # тут добавление сообщения в бд
-    Issue(tg_tag = update.message.from_user['username'],
-                desc = update.message.text).save()
+    Issue(
+        tg_tag=update.message.from_user['username'],
+        desc=update.message.text
+    ).save()
+
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=static_text.support_send
     )
     return ConversationHandler.END
+
 
 def issue_cancel(update, context):
     context.bot.send_message(

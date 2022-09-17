@@ -25,6 +25,7 @@ from tgbot.handlers import manage_data as md
 from tgbot.handlers.static_text import broadcast_command
 from tgbot.handlers.manage_data import ISSUE_MESSAGE_WAITING
 
+
 def setup_dispatcher(dp):
     """
     Adding handlers for events from Telegram
