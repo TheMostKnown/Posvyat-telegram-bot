@@ -5,7 +5,7 @@ import dotenv
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Load env variables from file
@@ -150,56 +150,60 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # -----> TELEGRAM
 TELEGRAM_TOKEN = os.getenv("TG_TOKEN")
 
+# -----> GOOGLE
+GOOGLE_TABLE_ID = os.getenv("GOOGLE_TABLE_ID")
+GOOGLE_CREDS_PATH = BASE_DIR / os.getenv("GOOGLE_CREDS_PATH")
+GOOGLE_TOKEN_PATH = BASE_DIR / os.getenv("GOOGLE_TOKEN_PATH")
 
 # -----> LOGGING
 ENABLE_DECORATOR_LOGGING = os.getenv('ENABLE_DECORATOR_LOGGING', True)
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-#             'style': '{',
-#         },
-#         'simple': {
-#             'format': '{levelname} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'handlers': {
-#         'default': {
-#             'level': 'DEBUG',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': os.path.join(BASE_DIR, 'logs/main.log'),
-#             'maxBytes': 1024 * 1024 * 5,  # 5 MB
-#             'backupCount': 5,
-#             'formatter': 'verbose',
-#             'encoding': 'utf-8',
-#         },
-#         'request_handler': {
-#             'level': 'DEBUG',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': os.path.join(BASE_DIR, 'logs/django_request.log'),
-#             'maxBytes': 1024 * 1024 * 5,  # 5 MB
-#             'backupCount': 5,
-#             'formatter': 'verbose',
-#             'encoding': 'utf-8',
-#         },
-#     },
-#     'loggers': {
-#         '': {
-#             'handlers': ['default'],
-#             'level': 'DEBUG',
-#             'propagate': True
-#         },
-#         'django.request': {  # Stop SQL debug from logging to main logger
-#             'handlers': ['request_handler'],
-#             'level': 'DEBUG',
-#             'propagate': False
-#         },
-#     },
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'default': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/main.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+        },
+        'request_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/django_request.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'django.request': {  # Stop SQL debug from logging to main logger
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+    },
+}
 
 
 # -----> SENTRY

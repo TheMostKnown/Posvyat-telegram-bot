@@ -8,9 +8,9 @@ from dtb.settings import DEBUG
 
 from tgbot.models import Location, Arcgis
 from tgbot.models import (
-    Config, User, UserActionLog, Organizers, Room, Guest,
+    Config, User, UserActionLog, Organizer, Room, Guest,
     OrganizerSchedule, GuestSchedule, Level, Broadcast, Issue,
-    Script, Button
+    Script, Button, Command
 )
 from tgbot.forms import BroadcastForm
 from tgbot.handlers import utils
@@ -75,12 +75,12 @@ class ConfigAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Organizers)
+@admin.register(Organizer)
 class OrganizersAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'level', 'room', 'surname',
-        'name', 'patronymic', 'tg_tag',
-        'phone', 'department', 'texts'
+        'id', 'surname', 'name',
+        'tg_tag', 'vk_link', 'phone',
+        'room', 'department'
     ]
 
 
@@ -92,7 +92,7 @@ class RoomAdmin(admin.ModelAdmin):
 @admin.register(Guest)
 class GuestAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'level', 'surname', 'name', 'patronymic',
+        'id', 'levels', 'surname', 'name', 'patronymic',
         'phone', 'room', 'tg_tag', 'vk_link', 'texts', 'team'
     ]
 
@@ -100,14 +100,14 @@ class GuestAdmin(admin.ModelAdmin):
 @admin.register(OrganizerSchedule)
 class OrganizerScheduleAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'tg_tag', 'desc', 'start_time', 'finish_time', 'changer'
+        'id', 'tg_tag', 'desc', 'start_time', 'finish_time'
     ]
 
 
 @admin.register(GuestSchedule)
 class GuestScheduleAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'desc', 'start_time', 'end_time'
+        'id', 'desc', 'start_time', 'finish_time'
     ]
 
 
@@ -118,7 +118,7 @@ class LevelAdmin(admin.ModelAdmin):
 
 @admin.register(Broadcast)
 class BroadcastAdmin(admin.ModelAdmin):
-    list_display = ['id', 'level', 'title', 'text']
+    list_display = ['id', 'levels', 'title', 'text']
 
 
 @admin.register(Issue)
@@ -128,9 +128,14 @@ class IssueAdmin(admin.ModelAdmin):
 
 @admin.register(Script)
 class ScriptAdmin(admin.ModelAdmin):
-    list_display = ['id', 'head', 'text']
+    list_display = ['id', 'title', 'text']
 
 
 @admin.register(Button)
 class ButtonAdmin(admin.ModelAdmin):
     list_display = ['id', 'title_from', 'title_to', 'text']
+
+
+@admin.register(Command)
+class CommandAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'arguments', 'desc', 'admin']

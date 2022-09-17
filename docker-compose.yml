@@ -26,7 +26,7 @@ services:
       - ./secrets/.env
     depends_on:
       - db
-    entrypoint: /entrypoint.sh
+    entrypoint: ./entrypoint.sh
   bot:
     build: .
     container_name: tgbot
