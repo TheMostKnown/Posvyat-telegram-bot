@@ -4,10 +4,10 @@ spell = Speller('ru')
 def handler_message(user_input, db_list):
     db_list_lower = [db_list[i].lower() for i in range(len(db_list))]  # lead to similar register
     user_input_lower = user_input.lower()
-    user_input_corrected = spell(spell(spell(spell(user_input_lower))))
+    user_input_autocorrected = spell(spell(spell(spell(user_input_lower))))
 
-    if user_input_corrected in db_list_lower:
-        return db_list[db_list_lower.index(user_input_corrected)]
+    if user_input_autocorrected in db_list_lower:
+        return db_list[db_list_lower.index(user_input_autocorrected)]
     else:
         lengths = []  # the difference in the number of letters
         unmatches = []  # number of unmatches between letters in each position of word
