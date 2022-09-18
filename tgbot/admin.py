@@ -79,8 +79,8 @@ class ConfigAdmin(admin.ModelAdmin):
 class OrganizersAdmin(admin.ModelAdmin):
     list_display = [
         'id', 'surname', 'name',
-        'tg_tag', 'vk_link', 'phone',
-        'room', 'department'
+        'is_admin', 'tg_tag', 'vk_link',
+        'phone', 'room', 'department'
     ]
 
 
