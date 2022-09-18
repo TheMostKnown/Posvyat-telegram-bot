@@ -94,7 +94,37 @@ def get_init_data(
                     levels=levels
                 ).save()
 
-    # getting info about users with admin rights
+    # getting info about admins
+    admins_sheet = spreadsheet['Admins']
+    for i in range(1, len(admins_sheet)):
+        surname = admins_sheet[i][0]
+        name = admins_sheet[i][1]
+        tg_tag = admins_sheet[i][2]
+
+        if tg_tag != '':
+            admin = Organizer.objects.filter(tg_tag=tg_tag)
+
+            if len(admin) > 0:
+                admin = admin[0]
+
+                admin.surname = surname
+                admin.name = name
+                admin.is_admin = True
+
+                admin.save()
+            else:
+                Organizer(
+                    surname=surname,
+                    name=name,
+                    is_admin=True,
+                    tg_tag=tg_tag,
+                    vk_link='',
+                    phone='',
+                    room='',
+                    department=''
+                ).save()
+
+    # getting info about event organizers
     organizers_sheet = spreadsheet['OrganizerSchedule']
 
     for i in range(1, len(organizers_sheet)):
@@ -107,7 +137,6 @@ def get_init_data(
         room = organizers_sheet[i][7]
 
         if tg_tag != '':
-
             organizer = Organizer.objects.filter(tg_tag=tg_tag)
 
             if len(organizer) > 0:
