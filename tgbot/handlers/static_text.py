@@ -1,3 +1,6 @@
+from tgbot.handlers.organizer import organizer
+
+
 welcome = "Добро пожаловать!"
 btn1 = "Кнопка №1"
 btn2 = "Кнопка №2"
@@ -17,11 +20,19 @@ broadcast_header = "This message will be sent to all users.\n\n"
 declined_message_broadcasting = "Рассылка сообщений отклонена❌\n\n"
 error_with_markdown = "Невозможно обработать ваш текст в формате Markdown."
 specify_word_with_error = " У вас ошибка в слове "
-secret_admin_commands = "⚠️ Секретные команды администратора\n" \
+common_comands = "Список доступных команд\n" \
+                "/support -- Обращение в Техподдержку\n" # need to fill
+organizer_commands = "\nКоманды Организатора\n" \
+                    "/depart <Отдел> -- список организаторов из указанного отдела\n" \
+                    "/room <номер комнаты> -- полная информация о комнате\n"
+secret_admin_commands = "\n⚠️ Секретные команды администратора\n" \
                         "/stats - bot stats\n" \
                         "/get_iss - list of unsolved issues\n" \
                         "/get_iss <number> - full description of issue with user's contact\n" \
-                        "/delete_issues - delete all unsolved issues from DB\n"
+                        "/delete_issues - delete all solved issues from DB\n"
+
+
+
 support_start = "Опиши свою проблему ОДНИМ СООБЩЕНИЕМ или нажми /cancel если передумал"
 support_send = "Ваша сообщение отправлено в техподдержки, с вами скоро свяжутся"
 support_cancel = "Отправка сообщения в техподдержку отменена"

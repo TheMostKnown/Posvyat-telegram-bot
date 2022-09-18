@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+from os import stat
 import re
 import telegram
 from telegram.ext import ConversationHandler
@@ -147,3 +148,18 @@ def issue_cancel(update, context):
         text=static_text.support_cancel
     )
     return ConversationHandler.END
+
+def commands_list(update, context):
+    text = static_text.common_comands
+
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+        text += static_text.organizer_commands
+    except Organizer.DoesNotExist:
+        return context.bot.send_message(user_id, text=text)
+    if user.is_admin:
+        text += static_text.secret_admin_commands
+    return context.bot.send_message(user_id, text=text)
+    

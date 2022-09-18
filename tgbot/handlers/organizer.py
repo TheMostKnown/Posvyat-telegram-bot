@@ -1,7 +1,8 @@
 
 from tgbot.handlers import static_text as st
-from tgbot.models import Organizer, Room, Guest
-from tgbot.handlers import static_text as st
+from tgbot.models import Organizer, Room, Guest, OrganizerSchedule
+import datetime as dt
+from django.db.models import Max, Min
 
 def organizer(update, context):
     """ Show help info about all secret admins commands """
@@ -48,6 +49,8 @@ def depart_orgs(update, context):
         return context.bot.send_message(user_id, text=st.depart_no_argument)
     
     depart = context.args[0]
+    #TODO add "spellchecker" or lower() to depart
+
     all_orgs = Organizer.objects.all()
     orgs_of_dep = list()
     for org in all_orgs:
@@ -74,7 +77,7 @@ def depart_orgs_current_moment(update, context):
     if len(context.args) == 0:
         return context.bot.send_message(user_id, text=st.depart_no_argument)
     
-    depart = context.args[0].lower()
+    depart = context.args[0]
     all_orgs = Organizer.objects.all()
     orgs_of_dep = list()
     for org in all_orgs:
@@ -84,4 +87,39 @@ def depart_orgs_current_moment(update, context):
     
     if len(orgs_of_dep) == 0:
         return context.bot.send_message(user_id, text=st.depart_mistake)
-    # to be continued
+    current_time = dt.datetime.now()
+    curr_datetime_str = current_time.strftime("%H:%M:%S %d/%m/%Y")
+    text = f"Отдел {depart} в {curr_datetime_str}\n"
+    for org in orgs_of_dep:
+        event = get_current_event(current_time, org)
+        text += f"{org.name} {org.surname} - {event}\n"
+    return context.bot.send_message(user_id, text=text)
+
+
+def get_current_event(current_time: dt.datetime, org: Organizer):
+    POSVYAT_FIRST_DATE = "18/09/2022"
+    POSVYAT_SECOND_DATE = "19/09/2022"
+    date = current_time.strftime("%d/%m/%Y")
+    if date != POSVYAT_FIRST_DATE and date != POSVYAT_SECOND_DATE:
+        return "no event1"
+    curr_time_str = current_time.strftime("%H:%M")
+    print(curr_time_str)
+    start_time = '' + curr_time_str
+    print(curr_time_str[3])
+    print(curr_time_str[4])
+    if curr_time_str[3] in ('3', '4', '5'):
+        start_time[3] = '3'
+    else:
+        start_time[3] = '0'
+    start_time[4] = '0'
+    print(start_time)
+    events = OrganizerSchedule.objects.filter(tg_tag = org.tg_tag, start_time = start_time)
+    if events.count() == 0:
+        return "no event2"
+    """if date == POSVYAT_SECOND_DATE:
+        event = events.get(id=Max('id')).desc
+    else:
+        event = events.get(id=Min('id')).desc"""
+    event = "no ev3"
+    return event
+

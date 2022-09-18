@@ -32,7 +32,7 @@ def setup_dispatcher(dp):
     """
 
     dp.add_handler(CommandHandler("start", commands.command_start))
-
+    dp.add_handler(CommandHandler("help", commands.commands_list))
     # admin commands
     dp.add_handler(CommandHandler("admin", admin.admin))
     dp.add_handler(CommandHandler("stats", admin.stats))
@@ -52,6 +52,7 @@ def setup_dispatcher(dp):
     # organizer command
     dp.add_handler(CommandHandler("room", organizer.room_info))
     dp.add_handler(CommandHandler("depart", organizer.depart_orgs))
+    dp.add_handler(CommandHandler("depart_now", organizer.depart_orgs_current_moment))
     # base buttons
     dp.add_handler(CallbackQueryHandler(hnd.btn1_hnd, pattern=f'^{md.BTN_1}'))
     dp.add_handler(CallbackQueryHandler(hnd.btn2_hnd, pattern=f'^{md.BTN_2}'))
