@@ -45,8 +45,13 @@ def command_start(update, context):
 
 def stats(update, context):
     """ Show help info about all secret admins commands """
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    username = update.message.from_user['username']
+    try:
+        user = Organizer.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+        
+    if not user.is_admin:
         return
 
     text = f"""
@@ -63,9 +68,14 @@ def stats(update, context):
 
 def broadcast_command_with_message(update, context):
     """ Type /broadcast <some_text>. Then check your message in Markdown format and broadcast to users."""
-    u = User.get_user(update, context)
-    user_id = extract_user_data_from_update(update)['user_id']
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
 
+    try:
+        u = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+    
     if not u.is_admin:
         text = static_text.broadcast_no_access
         markup = None

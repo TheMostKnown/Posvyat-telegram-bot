@@ -212,7 +212,7 @@ class Organizer(models.Model):
     name = models.CharField(max_length=256)
     is_admin = models.BooleanField(default=False)
     tg_tag = models.CharField(max_length=256, unique=True)
-    vk_link = models.CharField(max_length=256, unique=True)
+    vk_link = models.CharField(max_length=256)
     phone = models.CharField(max_length=256)
     room = models.CharField(max_length=256)
     department = models.TextField()

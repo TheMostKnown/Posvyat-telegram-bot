@@ -12,8 +12,14 @@ from tgbot.handlers import manage_data as md
 
 def admin(update, context):
     """ Show help info about all secret admins commands """
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    username = update.message.from_user['username']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+        
+    if not user.is_admin:
         return
 
     return update.message.reply_text(f'{st.secret_level}\n{st.secret_admin_commands}')
@@ -21,8 +27,14 @@ def admin(update, context):
 
 def stats(update, context):
     """ Show help info about all secret admins commands """
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    username = update.message.from_user['username']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+        
+    if not user.is_admin:
         return
 
     text = f"""
@@ -50,10 +62,10 @@ def get_issues(update, context):
     user_id = update.message.from_user['id']
 
     try:
-        user = Organizer.get(tg_tag=username)
+        user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
-        
+
     if not user.is_admin:
         return
 
@@ -96,7 +108,7 @@ def delete_issues(update, context):
     user_id = update.message.from_user['id']
 
     try:
-        user = Organizer.get(tg_tag=username)
+        user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
 
