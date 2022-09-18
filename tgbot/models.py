@@ -222,6 +222,9 @@ class Room(models.Model):
     number = models.CharField(max_length=256, primary_key=True)
     capacity = models.IntegerField()
 
+    def __str__(self):
+        return f"Номер комнаты: {self.number}\nВместимость: {self.capacity}\n"
+
 
 class Guest(models.Model):
     id = models.BigAutoField(primary_key=True)

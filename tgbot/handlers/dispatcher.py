@@ -51,6 +51,7 @@ def setup_dispatcher(dp):
     ))
     # organizer command
     dp.add_handler(CommandHandler("room", organizer.room_info))
+    dp.add_handler(CommandHandler("depart", organizer.depart_orgs))
     # base buttons
     dp.add_handler(CallbackQueryHandler(hnd.btn1_hnd, pattern=f'^{md.BTN_1}'))
     dp.add_handler(CallbackQueryHandler(hnd.btn2_hnd, pattern=f'^{md.BTN_2}'))

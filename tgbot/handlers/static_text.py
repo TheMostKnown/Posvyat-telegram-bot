@@ -18,10 +18,10 @@ declined_message_broadcasting = "Рассылка сообщений откло�
 error_with_markdown = "Невозможно обработать ваш текст в формате Markdown."
 specify_word_with_error = " У вас ошибка в слове "
 secret_admin_commands = "⚠️ Секретные команды администратора\n" \
-                        "/stats - bot stats" \
-                        "/get_iss - list of unsolved issues" \
-                        "/get_iss <number> - full description of issue with user's contact" \
-                        "/delete_issues - delete all unsolved issues from DB"
+                        "/stats - bot stats\n" \
+                        "/get_iss - list of unsolved issues\n" \
+                        "/get_iss <number> - full description of issue with user's contact\n" \
+                        "/delete_issues - delete all unsolved issues from DB\n"
 support_start = "Опиши свою проблему ОДНИМ СООБЩЕНИЕМ или нажми /cancel если передумал"
 support_send = "Ваша сообщение отправлено в техподдержки, с вами скоро свяжутся"
 support_cancel = "Отправка сообщения в техподдержку отменена"
@@ -46,3 +46,7 @@ delete_issues_declined = "Действие отменено"
 
 room_not_found = "Комната с таким номером не найдена"
 room_no_argument = "Вы забыли ввести номер комнаты.\n\nПример корректного ввода:\n/room 101"
+
+depart_no_argument = "Вы забыли ввести Отдел \n\nПример корректного ввода:\n"
+depart_mistake = "Ошибка в названии Отдела"
+list_of_orgs_from = "Список организоторов из отдела"
