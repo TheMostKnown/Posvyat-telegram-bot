@@ -4,7 +4,7 @@ import telegram
 from django.utils.timezone import now
 
 from tgbot.handlers import static_text as st
-from tgbot.models import User, Issue
+from tgbot.models import Organizer, User, Issue
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers import keyboard_utils as kb
 from tgbot.handlers import manage_data as md
@@ -46,9 +46,14 @@ def get_issues(update, context):
     """
     DESC_LIMIT = 40
 
-    user = User.get_user(update, context)
-    user_id = extract_user_data_from_update(update)['user_id']
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
 
+    try:
+        user = Organizer.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+        
     if not user.is_admin:
         return
 
@@ -87,8 +92,13 @@ def get_issues(update, context):
 
 def delete_issues(update, context):
     """Deletes all solved issues from DataBase"""
-    user = User.get_user(update, context)
-    user_id = extract_user_data_from_update(update)['user_id']
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
 
     if not user.is_admin:
         return

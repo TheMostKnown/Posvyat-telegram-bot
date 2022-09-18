@@ -8,7 +8,7 @@ from telegram.ext import ConversationHandler
 
 from django.utils import timezone
 from tgbot.handlers import static_text
-from tgbot.models import User, Issue, Room
+from tgbot.models import User, Issue, Room, Guest, Organizer
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers.keyboard_utils import make_keyboard_for_start_command, keyboard_confirm_decline_broadcasting
 from tgbot.handlers.utils import handler_logging
@@ -93,13 +93,17 @@ def broadcast_command_with_message(update, context):
 
 
 def issue(update, context):
-    user = User.get_user(update, context)
-
-    if user.is_banned:
-        return ConversationHandler.END
-
+    LIMIT_ISSUE = 3
+    username = update.message.from_user['username']
+    try:
+        user = Guest.objects.get(tg_tag = username)
+    except Guest.DoesNotExist:
+        try:
+            user = Organizer.objects.get(tg_tag = username)
+        except Organizer.DoesNotExist:
+            return
     # spam-filter
-    if Issue.objects.filter(tg_tag=user.username).exclude(status=md.SET_FIXED).count() >= 3:
+    if Issue.objects.filter(tg_tag=user.tg_tag).exclude(status=md.SET_FIXED).count() >= LIMIT_ISSUE:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=static_text.issue_limit
