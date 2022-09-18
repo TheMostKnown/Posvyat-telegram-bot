@@ -47,7 +47,7 @@ def stats(update, context):
     """ Show help info about all secret admins commands """
     username = update.message.from_user['username']
     try:
-        user = Organizer.get(tg_tag=username)
+        user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
         
