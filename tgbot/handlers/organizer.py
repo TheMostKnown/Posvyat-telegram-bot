@@ -1,6 +1,7 @@
 
 from tgbot.handlers import static_text as st
-from tgbot.models import Organizer
+from tgbot.models import Organizer, Room, Guest
+from tgbot.handlers import static_text as st
 
 def organizer(update, context):
     """ Show help info about all secret admins commands """
@@ -12,7 +13,25 @@ def organizer(update, context):
 
 def room_info(update, context):
     username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
     try:
-        user = Organizer.get(tg_tag=username)
+        user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
+
+    if len(context.args) == 0:
+        return context.bot.send_message(user_id, text=st.room_no_argument)
+    room_input = context.args[0]
+    try:
+        room = Room.objects.get(number = room_input)
+    except Room.DoesNotExist:
+        return context.bot.send_message(user_id, text=st.room_not_found)
+    
+    residents = Guest.objects.filter(room = room.number)
+    if (residents.count() == 0):
+        residents = Organizer.objects.filter(room = room.number)
+    text = str(room)
+    text += "Жители:\n"
+    for res in residents:
+        text += f"{res.surname} {res.name} {res.patronymic} t.me/{res.tg_tag} {res.vk_link}\n"
+    return context.bot.send_message(user_id, text=text, disable_web_page_preview=True)

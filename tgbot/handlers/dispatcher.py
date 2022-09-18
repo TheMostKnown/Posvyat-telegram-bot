@@ -18,7 +18,7 @@ from telegram.ext import (
 
 from dtb.settings import TELEGRAM_TOKEN
 
-from tgbot.handlers import admin, commands, files, location
+from tgbot.handlers import admin, commands, files, location, organizer
 from tgbot.handlers.commands import broadcast_command_with_message
 from tgbot.handlers import handlers as hnd
 from tgbot.handlers import manage_data as md
@@ -49,7 +49,8 @@ def setup_dispatcher(dp):
     dp.add_handler(MessageHandler(
         Filters.animation, files.show_file_id,
     ))
-
+    # organizer command
+    dp.add_handler(CommandHandler("room", organizer.room_info))
     # base buttons
     dp.add_handler(CallbackQueryHandler(hnd.btn1_hnd, pattern=f'^{md.BTN_1}'))
     dp.add_handler(CallbackQueryHandler(hnd.btn2_hnd, pattern=f'^{md.BTN_2}'))
@@ -79,7 +80,6 @@ def setup_dispatcher(dp):
         fallbacks=[CommandHandler('cancel', commands.issue_cancel), MessageHandler(Filters.command, commands.issue_cancel)],
         allow_reentry=True,
     ), group=2)
-
 
     # EXAMPLES FOR HANDLERS
     # dp.add_handler(MessageHandler(Filters.text, <function_handler>))

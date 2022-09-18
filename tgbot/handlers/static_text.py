@@ -43,3 +43,6 @@ set_all_success = "Статусы всех проблем user'a успешно 
 delete_issues_choose = "Вы уверены, что хотите удалить записи?"
 delete_issues_success = "Записи успешно удалены"
 delete_issues_declined = "Действие отменено"
+
+room_not_found = "Комната с таким номером не найдена"
+room_no_argument = "Вы забыли ввести номер комнаты.\n\nПример корректного ввода:\n/room 101"
