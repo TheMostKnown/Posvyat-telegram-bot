@@ -210,13 +210,12 @@ class Organizer(models.Model):
     id = models.BigAutoField(primary_key=True)
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
-    patronymic = models.CharField(max_length=256)
+    is_admin = models.BooleanField(default=False)
     tg_tag = models.CharField(max_length=256, unique=True)
+    vk_link = models.CharField(max_length=256, unique=True)
     phone = models.CharField(max_length=256)
     room = models.CharField(max_length=256)
-    levels = models.CharField(max_length=256)
     department = models.TextField()
-    texts = models.TextField()
 
 
 class Room(models.Model):
