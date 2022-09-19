@@ -130,11 +130,11 @@ def get_init_data(
     for i in range(1, len(organizers_sheet)):
         surname = organizers_sheet[i][0]
         name = organizers_sheet[i][1]
-        tg_tag = organizers_sheet[i][3]
-        vk_link = organizers_sheet[i][4]
-        phone = organizers_sheet[i][5]
-        department = organizers_sheet[i][6]
-        room = organizers_sheet[i][7]
+        tg_tag = organizers_sheet[i][2]
+        vk_link = organizers_sheet[i][3]
+        phone = organizers_sheet[i][4]
+        department = organizers_sheet[i][5]
+        room = organizers_sheet[i][6]
 
         if tg_tag != '':
             organizer = Organizer.objects.filter(tg_tag=tg_tag)
