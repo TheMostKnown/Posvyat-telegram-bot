@@ -5,6 +5,7 @@ from tgbot.handlers import static_text as st
 from tgbot.models import Organizer, Room, Guest, OrganizerSchedule
 import datetime as dt
 from django.db.models import Max, Min
+from tgbot.handlers.test import handler_message
 
 def organizer(update, context):
     """ Show help info about all secret admins commands """
@@ -50,7 +51,7 @@ def depart_orgs(update, context):
     if len(context.args) == 0:
         return context.bot.send_message(user_id, text=st.depart_no_argument)
     
-    depart = context.args[0]
+    depart = context.args[0].capitalize()
     #TODO add "spellchecker" or lower() to depart
 
     all_orgs = Organizer.objects.all()
@@ -79,7 +80,7 @@ def depart_orgs_current_moment(update, context):
     if len(context.args) == 0:
         return context.bot.send_message(user_id, text=st.depart_no_argument)
     
-    depart = context.args[0]
+    depart = context.args[0].capitalize()
     all_orgs = Organizer.objects.all()
     orgs_of_dep = list()
     for org in all_orgs:
@@ -113,3 +114,35 @@ def get_current_event(current_time: dt.datetime, org: Organizer):
     #    return "no event2"
     #return events[0]
 
+def schedule(update, context):
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+    text = ""
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+    if len(context.args) == 0:
+        text += "Расписание:\n\n"
+        sched = get_schedule(user.tg_tag)
+        text += sched
+        return context.bot.send_message(user_id, text=text)
+    if len(context.args) == 2:
+        users = Organizer.objects.filter(surname=context.args[0], name=context.args[1])
+        if users.count() == 0:
+            users = Organizer.objects.filter(surname=context.args[1], name=context.args[0])
+        if users.count() == 0:
+            text += st.org_not_found
+            org_list = list(Organizer.objects.values_list('surname', flat=True))
+            text += handler_message(context.args[0], org_list)
+            return context.bot.send_message(user_id, text=text)
+        user = users[0]
+        
+        
+
+
+
+
+def get_schedule(tg_tag: str):
+
+    return sched

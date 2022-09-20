@@ -122,6 +122,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
                 ('desc', models.CharField(max_length=256)),
                 ('tg_tag', models.CharField(max_length=256)),
+                ('date', models.CharField(max_length=256)),
                 ('start_time', models.CharField(max_length=256)),
                 ('finish_time', models.CharField(max_length=256)),
             ],

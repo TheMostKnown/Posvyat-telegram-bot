@@ -1,4 +1,5 @@
-
+FIRST_DAY = "01/10/2022"
+SECOND_DAY = "02/10/2022"
 
 BTN_1 = 'BTN_1'
 BTN_2 = 'BTN_2'

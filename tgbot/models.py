@@ -244,9 +244,12 @@ class OrganizerSchedule(models.Model):
     id = models.BigAutoField(primary_key=True)
     desc = models.CharField(max_length=256)
     tg_tag = models.CharField(max_length=256)
+    date = models.CharField(max_length=256)
     start_time = models.CharField(max_length=256)
     finish_time = models.CharField(max_length=256)
 
+    def __str__(self):
+        return f"{self.id} {self.tg_tag} - {self.start_time} - {self.desc}"
 
 
 class GuestSchedule(models.Model):
