@@ -127,7 +127,7 @@ def get_init_data(
     # getting info about event organizers
     organizers_sheet = spreadsheet['OrganizerSchedule']
 
-    for i in range(1, len(organizers_sheet)):
+    for i in range(2, len(organizers_sheet)):
         surname = organizers_sheet[i][0]
         name = organizers_sheet[i][1]
         tg_tag = organizers_sheet[i][2]
@@ -232,7 +232,7 @@ def get_init_data(
     # getting info about organizers' schedule
     organizers_schedule_sheet = spreadsheet['OrganizerSchedule']
 
-    for i in range(1, len(organizers_schedule_sheet)):
+    for i in range(2, len(organizers_schedule_sheet)):
         tg_tag = organizers_schedule_sheet[i][2]
 
         org_schedule = OrganizerSchedule.objects.filter(tg_tag=tg_tag)
@@ -242,15 +242,17 @@ def get_init_data(
 
             if desc != '':
 
-                start_time = organizers_schedule_sheet[0][j]
-                finish_time = organizers_schedule_sheet[0][j+1] if j + 1 < len(organizers_schedule_sheet[0]) else ''
+                date = organizers_schedule_sheet[0][j]
+                start_time = organizers_schedule_sheet[1][j]
+                finish_time = organizers_schedule_sheet[1][j+1] if j + 1 < len(organizers_schedule_sheet[1]) else ''
 
-                schedule_item = org_schedule.filter(start_time=start_time)
+                schedule_item = org_schedule.filter(start_time=start_time, date=date)
 
                 if len(schedule_item) > 0:
                     schedule_item = schedule_item[0]
 
                     schedule_item.desc = desc
+                    schedule_item.date = date
                     schedule_item.start_time = start_time
                     schedule_item.finish_time = finish_time
 
@@ -259,6 +261,7 @@ def get_init_data(
                     OrganizerSchedule(
                         desc=desc,
                         tg_tag=tg_tag,
+                        date=date,
                         start_time=start_time,
                         finish_time=finish_time
                     ).save()

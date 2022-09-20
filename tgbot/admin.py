@@ -100,7 +100,8 @@ class GuestAdmin(admin.ModelAdmin):
 @admin.register(OrganizerSchedule)
 class OrganizerScheduleAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'tg_tag', 'desc', 'start_time', 'finish_time'
+        'id', 'tg_tag', 'desc',
+        'date', 'start_time', 'finish_time'
     ]
 
 
