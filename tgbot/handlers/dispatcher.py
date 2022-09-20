@@ -2,6 +2,8 @@
 
 """Telegram event handlers."""
 
+from logging import Filter
+from tokenize import group
 import telegram
 
 from telegram.ext import (
@@ -9,6 +11,7 @@ from telegram.ext import (
     CommandHandler, MessageHandler,
     InlineQueryHandler, CallbackQueryHandler,
     ChosenInlineResultHandler, PollAnswerHandler,
+    ConversationHandler,
 )
 
 # from celery.decorators import task  # event processing in async mode
@@ -20,6 +23,7 @@ from tgbot.handlers.commands import broadcast_command_with_message
 from tgbot.handlers import handlers as hnd
 from tgbot.handlers import manage_data as md
 from tgbot.handlers.static_text import broadcast_command
+from tgbot.handlers.manage_data import ISSUE_MESSAGE_WAITING
 
 
 def setup_dispatcher(dp):
@@ -32,6 +36,15 @@ def setup_dispatcher(dp):
     # admin commands
     dp.add_handler(CommandHandler("admin", admin.admin))
     dp.add_handler(CommandHandler("stats", admin.stats))
+
+    dp.add_handler(CommandHandler("get_iss", admin.get_issues))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_set_status, pattern=f'^{md.SET_IN_PROGRESS}|{md.SET_NOT_FIXED}|{md.SET_FIXED}'))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_all_one_issue, pattern=f'^{md.SET_ONE_OR_ALL_ISS}'))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_set_all_issues, pattern=f'^{md.SET_ALL_ISS}'))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_get_issues_from_user, pattern=f'^{md.GET_ALL_ISS}'))
+
+    dp.add_handler(CommandHandler("delete_issues", admin.delete_issues))
+    dp.add_handler(CallbackQueryHandler(hnd.btn_delete_issues, pattern=f'^{md.CONFIRM_DELETING}|{md.DECLINE_DELETING}'))
 
     dp.add_handler(MessageHandler(
         Filters.animation, files.show_file_id,
@@ -52,6 +65,21 @@ def setup_dispatcher(dp):
 
     dp.add_handler(MessageHandler(Filters.regex(rf'^{broadcast_command} .*'), broadcast_command_with_message))
     dp.add_handler(CallbackQueryHandler(hnd.broadcast_decision_handler, pattern=f"^{md.CONFIRM_DECLINE_BROADCAST}"))
+    
+    # issues
+    dp.add_handler(ConversationHandler(
+        # точка входа
+        entry_points=[CommandHandler('support', commands.issue)],
+        states={
+            ISSUE_MESSAGE_WAITING: [
+                MessageHandler(Filters.text & ~Filters.command, commands.issue_message),
+            ],
+        },
+        # точка выхода из разговора
+        fallbacks=[CommandHandler('cancel', commands.issue_cancel), MessageHandler(Filters.command, commands.issue_cancel)],
+        allow_reentry=True,
+    ), group=2)
+
 
     # EXAMPLES FOR HANDLERS
     # dp.add_handler(MessageHandler(Filters.text, <function_handler>))

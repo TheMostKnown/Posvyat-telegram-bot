@@ -18,13 +18,14 @@ def send_typing_action(func):
     @wraps(func)
     def command_func(update, context, *args, **kwargs):
         context.bot.send_chat_action(chat_id=update.effective_message.chat_id, action=telegram.ChatAction.TYPING)
-        return func(update, context,  *args, **kwargs)
+        return func(update, context, *args, **kwargs)
 
     return command_func
 
 
 def handler_logging(action_name=None):
     """ Turn on this decorator via ENABLE_DECORATOR_LOGGING variable in dtb.settings """
+
     def decor(func):
         def handler(update, context, *args, **kwargs):
             user, _ = User.get_user_and_created(update, context)
@@ -35,21 +36,31 @@ def handler_logging(action_name=None):
                 text = ''
             UserActionLog.objects.create(user_id=user.user_id, action=action, text=text, created_at=timezone.now())
             return func(update, context, *args, **kwargs)
+
         return handler if ENABLE_DECORATOR_LOGGING else func
+
     return decor
 
 
-def send_message(user_id, text, parse_mode=None, reply_markup=None, reply_to_message_id=None,
-                 disable_web_page_preview=None, entities=None, tg_token=TELEGRAM_TOKEN):
+def send_message(
+        user_id,
+        text,
+        parse_mode=None,
+        reply_markup=None,
+        reply_to_message_id=None,
+        disable_web_page_preview=None,
+        entities=None,
+        tg_token=TELEGRAM_TOKEN
+) -> bool:
     bot = telegram.Bot(tg_token)
     try:
         if entities:
             entities = [
-                MessageEntity(type=entity['type'],
-                              offset=entity['offset'],
-                              length=entity['length']
-                )
-                for entity in entities
+                MessageEntity(
+                    type=entity['type'],
+                    offset=entity['offset'],
+                    length=entity['length']
+                ) for entity in entities
             ]
 
         m = bot.send_message(
@@ -61,6 +72,7 @@ def send_message(user_id, text, parse_mode=None, reply_markup=None, reply_to_mes
             disable_web_page_preview=disable_web_page_preview,
             entities=entities,
         )
+
     except telegram.error.Unauthorized:
         print(f"Can't send message to {user_id}. Reason: Bot was stopped.")
         User.objects.filter(user_id=user_id).update(is_blocked_bot=True)

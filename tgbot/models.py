@@ -212,7 +212,7 @@ class Organizer(models.Model):
     name = models.CharField(max_length=256)
     is_admin = models.BooleanField(default=False)
     tg_tag = models.CharField(max_length=256, unique=True)
-    vk_link = models.CharField(max_length=256, unique=True)
+    vk_link = models.CharField(max_length=256)
     phone = models.CharField(max_length=256)
     room = models.CharField(max_length=256)
     department = models.TextField()
@@ -265,10 +265,24 @@ class Broadcast(models.Model):
 
 
 class Issue(models.Model):
+    STATUSES = (
+        ('N', 'Not solved'),
+        ('P', 'In progress'),
+        ('F', 'Fixed'),
+    )
+    stat_dict = {
+        "N": "Not solved",
+        "P": "In progress",
+        "F": "Fixed"
+    }
+
     id = models.BigAutoField(primary_key=True)
     tg_tag = models.CharField(max_length=256)
     desc = models.TextField()
-    status = models.CharField(max_length=256)
+    status = models.CharField(max_length=256, choices=STATUSES, default='N')
+
+    def __str__(self):
+        return f"Issue #{self.id}\n\n{self.stat_dict[self.status]}\n\n{self.desc}\n\nuser: t.me/{self.tg_tag}"
 
 
 class Script(models.Model):

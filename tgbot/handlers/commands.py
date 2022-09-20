@@ -4,13 +4,15 @@ import datetime
 import logging
 import re
 import telegram
+from telegram.ext import ConversationHandler
 
 from django.utils import timezone
 from tgbot.handlers import static_text
-from tgbot.models import User
+from tgbot.models import User, Issue, Room, Guest, Organizer
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers.keyboard_utils import make_keyboard_for_start_command, keyboard_confirm_decline_broadcasting
 from tgbot.handlers.utils import handler_logging
+from tgbot.handlers import manage_data as md
 
 logger = logging.getLogger('default')
 logger.info("Command handlers check!")
@@ -43,8 +45,13 @@ def command_start(update, context):
 
 def stats(update, context):
     """ Show help info about all secret admins commands """
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    username = update.message.from_user['username']
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+        
+    if not user.is_admin:
         return
 
     text = f"""
@@ -61,9 +68,14 @@ def stats(update, context):
 
 def broadcast_command_with_message(update, context):
     """ Type /broadcast <some_text>. Then check your message in Markdown format and broadcast to users."""
-    u = User.get_user(update, context)
-    user_id = extract_user_data_from_update(update)['user_id']
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
 
+    try:
+        u = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+    
     if not u.is_admin:
         text = static_text.broadcast_no_access
         markup = None
@@ -88,3 +100,50 @@ def broadcast_command_with_message(update, context):
             text=text_error,
             chat_id=user_id
         )
+
+
+def issue(update, context):
+    LIMIT_ISSUE = 3
+    username = update.message.from_user['username']
+    try:
+        user = Guest.objects.get(tg_tag = username)
+    except Guest.DoesNotExist:
+        try:
+            user = Organizer.objects.get(tg_tag = username)
+        except Organizer.DoesNotExist:
+            return
+    # spam-filter
+    if Issue.objects.filter(tg_tag=user.tg_tag).exclude(status=md.SET_FIXED).count() >= LIMIT_ISSUE:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=static_text.issue_limit
+        )
+        return ConversationHandler.END
+    
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=static_text.support_start
+    )
+    return md.ISSUE_MESSAGE_WAITING
+
+
+def issue_message(update, context):
+    # тут добавление сообщения в бд
+    Issue(
+        tg_tag=update.message.from_user['username'],
+        desc=update.message.text
+    ).save()
+
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=static_text.support_send
+    )
+    return ConversationHandler.END
+
+
+def issue_cancel(update, context):
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=static_text.support_cancel
+    )
+    return ConversationHandler.END
