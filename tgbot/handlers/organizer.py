@@ -1,4 +1,6 @@
 
+from copy import deepcopy
+from tracemalloc import start
 from tgbot.handlers import static_text as st
 from tgbot.models import Organizer, Room, Guest, OrganizerSchedule
 import datetime as dt
@@ -97,29 +99,17 @@ def depart_orgs_current_moment(update, context):
 
 
 def get_current_event(current_time: dt.datetime, org: Organizer):
-    POSVYAT_FIRST_DATE = "18/09/2022"
-    POSVYAT_SECOND_DATE = "19/09/2022"
-    date = current_time.strftime("%d/%m/%Y")
-    if date != POSVYAT_FIRST_DATE and date != POSVYAT_SECOND_DATE:
-        return "no event1"
-    curr_time_str = current_time.strftime("%H:%M")
-    print(curr_time_str)
-    start_time = '' + curr_time_str
-    print(curr_time_str[3])
-    print(curr_time_str[4])
-    if curr_time_str[3] in ('3', '4', '5'):
-        start_time[3] = '3'
+    FORMAT = ""
+    start_time = current_time.time()
+    if current_time.minute >= 30:
+        start_time = start_time - dt.timedelta(minute = (start_time.minute - 30))
     else:
-        start_time[3] = '0'
-    start_time[4] = '0'
-    print(start_time)
-    events = OrganizerSchedule.objects.filter(tg_tag = org.tg_tag, start_time = start_time)
-    if events.count() == 0:
-        return "no event2"
-    """if date == POSVYAT_SECOND_DATE:
-        event = events.get(id=Max('id')).desc
-    else:
-        event = events.get(id=Min('id')).desc"""
-    event = "no ev3"
-    return event
+        print("hey")
+        start_time = start_time - dt.timedelta(minute = start_time.minute)
+    #TODO start_Time to str and убрать 0 в начале
+    date = current_time.strftime(FORMAT)
+    #events = OrganizerSchedule.objects.filter(tg_tag = org.tg_tag, start_time = start_time, date = date)
+    #if events.count() == 0:
+    #    return "no event2"
+    #return events[0]
 
