@@ -5,7 +5,9 @@ from tgbot.handlers import static_text as st
 from tgbot.models import Organizer, Room, Guest, OrganizerSchedule
 import datetime as dt
 from django.db.models import Max, Min
-from tgbot.handlers.test import handler_message
+#from tgbot.handlers.test import handler_message
+import telegram
+from tgbot.handlers import manage_data as md
 
 def organizer(update, context):
     """ Show help info about all secret admins commands """
@@ -32,12 +34,14 @@ def room_info(update, context):
         return context.bot.send_message(user_id, text=st.room_not_found)
     
     residents = Guest.objects.filter(room = room.number)
-    if (residents.count() == 0):
-        residents = Organizer.objects.filter(room = room.number)
     text = str(room)
-    text += "Жители:\n"
+    text += "Участники:\n"
     for res in residents:
-        text += f"{res.surname} {res.name} {res.patronymic} t.me/{res.tg_tag} {res.vk_link}\n"
+        text += f"- ФИО: {res.surname} {res.name} {res.patronymic}\n" \
+                f"  Номер телефона: {res.phone}\n" \
+                f"  ТГ: t.me/{res.tg_tag}\n" \
+                f"  ВК: {res.vk_link}\n" \
+                f"  Команда: {res.team}\n"
     return context.bot.send_message(user_id, text=text, disable_web_page_preview=True)
 
 def depart_orgs(update, context):
@@ -81,6 +85,10 @@ def depart_orgs_current_moment(update, context):
         return context.bot.send_message(user_id, text=st.depart_no_argument)
     
     depart = context.args[0].capitalize()
+    # spell check and auto-fix
+    #if depart not in md.DEPART_LIST:
+        #depart = handler_message(depart, md.DEPART_LIST)
+    
     all_orgs = Organizer.objects.all()
     orgs_of_dep = list()
     for org in all_orgs:
@@ -98,22 +106,6 @@ def depart_orgs_current_moment(update, context):
         text += f"{org.name} {org.surname} - {event}\n"
     return context.bot.send_message(user_id, text=text)
 
-
-def get_current_event(current_time: dt.datetime, org: Organizer):
-    FORMAT = ""
-    start_time = current_time.time()
-    if current_time.minute >= 30:
-        start_time = start_time - dt.timedelta(minute = (start_time.minute - 30))
-    else:
-        print("hey")
-        start_time = start_time - dt.timedelta(minute = start_time.minute)
-    #TODO start_Time to str and убрать 0 в начале
-    date = current_time.strftime(FORMAT)
-    #events = OrganizerSchedule.objects.filter(tg_tag = org.tg_tag, start_time = start_time, date = date)
-    #if events.count() == 0:
-    #    return "no event2"
-    #return events[0]
-
 def schedule(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
@@ -126,23 +118,69 @@ def schedule(update, context):
         text += "Расписание:\n\n"
         sched = get_schedule(user.tg_tag)
         text += sched
-        return context.bot.send_message(user_id, text=text)
+        return context.bot.send_message(user_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
     if len(context.args) == 2:
-        users = Organizer.objects.filter(surname=context.args[0], name=context.args[1])
+        users = Organizer.objects.filter(surname=context.args[0].capitalize(),
+                                        name=context.args[1].capitalize())
         if users.count() == 0:
-            users = Organizer.objects.filter(surname=context.args[1], name=context.args[0])
+            users = Organizer.objects.filter(surname=context.args[1].capitalize(),
+                                            name=context.args[0].capitalize())
         if users.count() == 0:
             text += st.org_not_found
             org_list = list(Organizer.objects.values_list('surname', flat=True))
-            text += handler_message(context.args[0], org_list)
+            #text += handler_message(context.args[0], org_list)
             return context.bot.send_message(user_id, text=text)
         user = users[0]
+        text += get_schedule(user.tg_tag)
+        return context.bot.send_message(user_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+    if len(context.args) == 1:
+        users = Organizer.objects.filter()
+
         
-        
 
 
 
+def get_current_event(current_time: dt.datetime, org: Organizer):
+    if current_time.minute >= 30:
+        current_time = current_time.replace(minute = 30)
+    else:
+        current_time = current_time.replace(minute = 0)
+    #TODO start_Time to str and убрать 0 в начале
+    start_time = current_time.strftime("%H:%M")
+    date = current_time.strftime("%d:%m:%Y")
+    if date[0] == '0':
+        date = date[1:]
+    if start_time[0] == '0':
+        start_time = start_time[1:]
+    events = OrganizerSchedule.objects.filter(tg_tag = org.tg_tag, start_time = start_time, date = date)
+    if events.count() == 0:
+        return "no event"
+    return events[0].desc
 
 def get_schedule(tg_tag: str):
+    events = OrganizerSchedule.objects.filter(tg_tag=tg_tag).order_by('date', 'start_time')
+    sched = ''
+    if events.count() == 0:
+        return "No events\n"
+    
+    current_action = events[0].desc
+    current_start_time = events[0].start_time
+    current_start_date = events[0].date
+    current_end_time = events[0].finish_time
 
+    for event in events[1:]:
+        if current_action == event.desc:
+            current_end_time = event.end
+
+        else:
+            day = 1 if current_start_date == md.FIRST_DAY else 2
+            sched += f'*{current_action}* в {day} день с {current_start_time} до {current_end_time}\n'
+            current_action = event.action
+            current_start_time = event.start_time
+            current_start_date = event.date
+            current_end_time = event.finish_time
+
+    sched += f'*{current_action}* в {day} день с {current_start_time} до ...'
+    
     return sched
+

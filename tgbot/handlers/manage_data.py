@@ -1,5 +1,5 @@
-FIRST_DAY = "01/10/2022"
-SECOND_DAY = "02/10/2022"
+FIRST_DAY = "1.10.2022"
+SECOND_DAY = "2.10.2022"
 
 BTN_1 = 'BTN_1'
 BTN_2 = 'BTN_2'
@@ -23,3 +23,5 @@ GET_ALL_ISS = "USER_ALL"
 
 CONFIRM_DELETING = "CNFRM_DEL"
 DECLINE_DELETING = "DCLN_DEL"
+
+DEPART_LIST = ['Админка','Пиар','Игротехника','Техотдел']
