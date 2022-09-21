@@ -248,7 +248,7 @@ def get_init_data(
 
                 schedule_item = org_schedule.filter(start_time=start_time, date=date)
 
-                if len(schedule_item) > 0:
+                if schedule_item.count() > 0:
                     schedule_item = schedule_item[0]
 
                     schedule_item.desc = desc

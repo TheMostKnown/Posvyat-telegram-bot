@@ -145,9 +145,11 @@ def get_current_event(current_time: dt.datetime, org: Organizer):
         current_time = current_time.replace(minute = 30)
     else:
         current_time = current_time.replace(minute = 0)
-    #TODO start_Time to str and убрать 0 в начале
+    # For test use commented vars instead of actual
+    # start_time = dt.time(minute=30, hour = 9).strftime("%H:%M")
+    # date = dt.date(day=2, month=10, year=2022).strftime("%d.%m.%Y")
     start_time = current_time.strftime("%H:%M")
-    date = current_time.strftime("%d:%m:%Y")
+    date = current_time.strftime("%d.%m.%Y")
     if date[0] == '0':
         date = date[1:]
     if start_time[0] == '0':
@@ -162,24 +164,21 @@ def get_schedule(tg_tag: str):
     sched = ''
     if events.count() == 0:
         return "No events\n"
-    
     current_action = events[0].desc
     current_start_time = events[0].start_time
     current_start_date = events[0].date
     current_end_time = events[0].finish_time
-
     for event in events[1:]:
         if current_action == event.desc:
-            current_end_time = event.end
+            current_end_time = event.finish_time
 
         else:
             day = 1 if current_start_date == md.FIRST_DAY else 2
             sched += f'*{current_action}* в {day} день с {current_start_time} до {current_end_time}\n'
-            current_action = event.action
+            current_action = event.desc
             current_start_time = event.start_time
             current_start_date = event.date
             current_end_time = event.finish_time
-
     sched += f'*{current_action}* в {day} день с {current_start_time} до ...'
     
     return sched
