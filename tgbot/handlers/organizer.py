@@ -73,6 +73,7 @@ def depart_orgs(update, context):
         text += f"{org.surname} {org.name} t.me/{org.tg_tag}\n"
     return context.bot.send_message(user_id, text=text, disable_web_page_preview=True)
 
+
 def depart_orgs_current_moment(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
@@ -106,6 +107,7 @@ def depart_orgs_current_moment(update, context):
         text += f"{org.name} {org.surname} - {event}\n"
     return context.bot.send_message(user_id, text=text)
 
+
 def schedule(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
@@ -114,11 +116,15 @@ def schedule(update, context):
         user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
-    if len(context.args) == 0:
+    
+    # user's schedule
+    if len(context.args) == 0 or len(context.args) > 2:
         text += "Расписание:\n\n"
         sched = get_schedule(user.tg_tag)
         text += sched
         return context.bot.send_message(user_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+    
+    #schedule by surname and name
     if len(context.args) == 2:
         users = Organizer.objects.filter(surname=context.args[0].capitalize(),
                                         name=context.args[1].capitalize())
@@ -131,13 +137,94 @@ def schedule(update, context):
             #text += handler_message(context.args[0], org_list)
             return context.bot.send_message(user_id, text=text)
         user = users[0]
+        text += f"{user.surname} {user.name}\n\nРасписание\n"
         text += get_schedule(user.tg_tag)
         return context.bot.send_message(user_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
+    
+    #schedule by surname or name or tg_tag or vk_link or phone_number
     if len(context.args) == 1:
-        users = Organizer.objects.filter()
+        input = context.args[0]
+        # phone
+        users = Organizer.objects.filter(phone = input)
+
+        # tg_tag
+        if users.count() == 0:
+            users = Organizer.objects.filter(tg_tag = input)
+
+        #vk_link
+        if users.count() == 0:
+            users = Organizer.objects.filter(vk_link = input)
+        input = input.capitalize()
+        # surname
+        if users.count() == 0:
+            users = Organizer.objects.filter(surname = input)
+        # name
+        if users.count() == 0:
+            users = Organizer.objects.filter(name = input)
+        
+        # not found at all
+        if users.count() == 0:
+            text += st.org_not_found
+            return context.bot.send_message(user_id, text=text)
+        user = users[0]
+        text += f"{user.surname} {user.name}\n\nРасписание\n"
+        text += get_schedule(user.tg_tag)
+        return context.bot.send_message(user_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN)
 
         
+def guest_info(update, context):
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+    text = ""
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+    if len(context.args) == 2:
+        users = Guest.objects.filter(surname=context.args[0].capitalize(),
+                                        name=context.args[1].capitalize())
+        if users.count() == 0:
+            users = Guest.objects.filter(surname=context.args[1].capitalize(),
+                                            name=context.args[0].capitalize())
+        if users.count() == 0:
+            text += st.guest_not_found
+            #org_list = list(Guest.objects.values_list('surname', flat=True))
+            #text += handler_message(context.args[0], org_list)
+            return context.bot.send_message(user_id, text=text)
+        user = users[0]
+        text += get_guest_info(user)
+        return context.bot.send_message(user_id, text=text)
+    if len(context.args) == 1:
+        input = context.args[0]
+        # phone
+        users = Guest.objects.filter(phone = input)
 
+        # tg_tag
+        if users.count() == 0:
+            users = Guest.objects.filter(tg_tag = input)
+
+        #vk_link
+        if users.count() == 0:
+            users = Guest.objects.filter(vk_link = input)
+        input = input.capitalize()
+        # surname
+        if users.count() == 0:
+            users = Guest.objects.filter(surname = input)
+        # name
+        if users.count() == 0:
+            users = Guest.objects.filter(name = input)
+        
+        # not found at all
+        if users.count() == 0:
+            text += st.guest_not_found
+            return context.bot.send_message(user_id, text=text)
+        user = users[0]
+        text += get_guest_info(user)
+        return context.bot.send_message(user_id, text=text)
+    if len(context.args) == 0:
+        return context.bot.send_message(user_id, text=st.guest_no_arg)
+    if len(context.args) > 2:
+        return context.bot.send_message(user_id, text=(st.guest_too_much_args + st.guest_no_arg))
 
 
 def get_current_event(current_time: dt.datetime, org: Organizer):
@@ -183,3 +270,14 @@ def get_schedule(tg_tag: str):
     
     return sched
 
+def get_guest_info(guest: Guest):
+    info =  f"ФИО: {guest.surname} {guest.name} {guest.patronymic}\n" \
+            f"ТГ: t.me/{guest.tg_tag}\n" \
+            f"ВК: {guest.vk_link}\n" \
+            f"Комната: {guest.room}\n"
+    neighboors = Guest.objects.filter(room = guest.room).exclude(id=guest.id)
+    info += f"Соседи:\n"
+    for neig in neighboors:
+        info += f"- {neig.surname} {neig.name} {neig.patronymic}\n"
+    info += f"Команда: {guest.team}\n"
+    return info

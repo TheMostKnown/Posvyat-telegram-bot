@@ -24,4 +24,5 @@ GET_ALL_ISS = "USER_ALL"
 CONFIRM_DELETING = "CNFRM_DEL"
 DECLINE_DELETING = "DCLN_DEL"
 
-DEPART_LIST = ['Админка','Пиар','Игротехника','Техотдел']
+#TODO дополнить DEPART_LIST
+DEPART_LIST = ['Админка','Пиар','Игротехника','Техотдел'] 
