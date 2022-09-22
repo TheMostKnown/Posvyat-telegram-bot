@@ -56,7 +56,6 @@ def depart_orgs(update, context):
         return context.bot.send_message(user_id, text=st.depart_no_argument)
     
     depart = context.args[0].capitalize()
-    #TODO add "spellchecker" or lower() to depart
 
     all_orgs = Organizer.objects.all()
     orgs_of_dep = list()
