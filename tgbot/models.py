@@ -9,7 +9,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from tgbot import utils
-
+from tgbot.handlers.manage_data import FIRST_DAY, SECOND_DAY
 
 class Config(models.Model):
     """Модель настроек бота."""
@@ -222,6 +222,9 @@ class Room(models.Model):
     number = models.CharField(max_length=256, primary_key=True)
     capacity = models.IntegerField()
 
+    def __str__(self):
+        return f"Номер комнаты: {self.number}\nВместимость: {self.capacity}\n"
+
 
 class Guest(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -241,8 +244,12 @@ class OrganizerSchedule(models.Model):
     id = models.BigAutoField(primary_key=True)
     desc = models.CharField(max_length=256)
     tg_tag = models.CharField(max_length=256)
+    date = models.CharField(max_length=256)
     start_time = models.CharField(max_length=256)
     finish_time = models.CharField(max_length=256)
+
+    def __str__(self):
+        return f"{self.id} {self.tg_tag} - {self.start_time} - {self.desc}"
 
 
 class GuestSchedule(models.Model):

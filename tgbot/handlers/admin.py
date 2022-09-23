@@ -119,4 +119,3 @@ def delete_issues(update, context):
         user_id, text=st.delete_issues_choose,
         reply_markup=kb.keyboard_confirm_delete_issue(),
     )
-
