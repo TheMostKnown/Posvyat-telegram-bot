@@ -149,6 +149,7 @@ def issue_cancel(update, context):
     )
     return ConversationHandler.END
 
+
 def commands_list(update, context):
     text = static_text.common_comands
 

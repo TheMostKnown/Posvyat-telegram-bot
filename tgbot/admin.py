@@ -86,7 +86,7 @@ class OrganizersAdmin(admin.ModelAdmin):
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_diplay = ['number', 'capacity']
+    list_display = ['number', 'capacity']
 
 
 @admin.register(Guest)
