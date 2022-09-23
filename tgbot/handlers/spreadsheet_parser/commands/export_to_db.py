@@ -21,7 +21,7 @@ def get_init_data(
     )
 
     # getting info about guests' levels
-    levels_sheet = spreadsheet['Levels']
+    levels_sheet = spreadsheet['Уровни']
 
     for i in range(1, len(levels_sheet)):
         level_num = int(levels_sheet[i][0])
@@ -42,7 +42,7 @@ def get_init_data(
                 ).save()
 
     # getting info about commands for calling
-    commands_sheet = spreadsheet['Commands']
+    commands_sheet = spreadsheet['Команды']
 
     for i in range(1, len(commands_sheet)):
         name = commands_sheet[i][0]
@@ -70,7 +70,7 @@ def get_init_data(
                 ).save()
 
     # getting info about broadcasting texts
-    broadcasting_sheet = spreadsheet['Broadcast']
+    broadcasting_sheet = spreadsheet['Рассылки']
 
     for i in range(1, len(broadcasting_sheet)):
         title = broadcasting_sheet[i][0]
@@ -95,7 +95,7 @@ def get_init_data(
                 ).save()
 
     # getting info about admins
-    admins_sheet = spreadsheet['Admins']
+    admins_sheet = spreadsheet['Админы']
     for i in range(1, len(admins_sheet)):
         surname = admins_sheet[i][0]
         name = admins_sheet[i][1]
@@ -125,7 +125,7 @@ def get_init_data(
                 ).save()
 
     # getting info about event organizers
-    organizers_sheet = spreadsheet['OrganizerSchedule']
+    organizers_sheet = spreadsheet['Сетка Оргов']
 
     for i in range(2, len(organizers_sheet)):
         surname = organizers_sheet[i][0]
@@ -162,7 +162,7 @@ def get_init_data(
                 ).save()
 
     # getting info about participants
-    guests_sheet = spreadsheet['Guests']
+    guests_sheet = spreadsheet['Участники']
 
     for i in range(1, len(guests_sheet)):
         surname = guests_sheet[i][0]
@@ -230,7 +230,7 @@ def get_init_data(
                 ).save()
 
     # getting info about organizers' schedule
-    organizers_schedule_sheet = spreadsheet['OrganizerSchedule']
+    organizers_schedule_sheet = spreadsheet['Сетка Оргов']
 
     for i in range(2, len(organizers_schedule_sheet)):
         tg_tag = organizers_schedule_sheet[i][2]
@@ -293,7 +293,7 @@ def get_init_data(
     #         ).save()
 
     # getting info about rooms
-    rooms_sheet = spreadsheet['Rooms']
+    rooms_sheet = spreadsheet['Комнаты']
 
     for i in range(1, len(rooms_sheet)):
         number = rooms_sheet[i][0]
@@ -314,7 +314,7 @@ def get_init_data(
                 ).save()
 
     # getting info about scripts
-    scripts_sheet = spreadsheet['Scripts']
+    scripts_sheet = spreadsheet['Скрипты']
 
     for i in range(1, len(scripts_sheet)):
         title = scripts_sheet[i][0]
@@ -335,7 +335,7 @@ def get_init_data(
                 ).save()
 
     # getting info about buttons
-    buttons_sheet = spreadsheet['Buttons']
+    buttons_sheet = spreadsheet['Кнопки']
 
     for i in range(1, len(buttons_sheet)):
         text = buttons_sheet[i][0]
