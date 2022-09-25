@@ -30,36 +30,36 @@ organizer_commands = "\nКоманды Организатора\n" \
                     "/schedule <Фамилия Имя|tg_tag|vklink|номер телефон> -- расписание организатора\n" \
                     "/guest <Фамилия Имя|tg_tag|vklink|номер телефон> -- полная информация о госте\n"
 secret_admin_commands = "\n⚠️ Секретные команды администратора\n" \
-                       "/stats - bot stats\n" \
-                       "/get_iss - list of unsolved issues\n" \
-                       "/get_iss <number> - full description of issue with user's contact\n" \
-                       "/delete_issues - delete all solved issues from DB\n" \
-                       "/delete_user <Tuple[arg1: str, arg2: str]> - забанить перечисленных юзеров по определенным причинам\n" \
-                       "__Пример: /delete_user @skuikness спам @ylptred возврат -> удалит пользователя с тегом @skuikness по причине спам и пользователя с тегом @ylptred по причине возврат билета__\n" \
-                       "Возможные значение arg2:\n" \
-                       "__спам__\n" \
-                       "__возврат__\n" \
-                       "/get_logs now - получить логи\n" \
-                       "/replace_org_tag <arg1: str, arg2: str> - заменить arg1 тег орга на arg2 тег орга\n" \
-                       "__Пример: /replace_org_tag @skuikness @ylptred -> заменит тег орга skuikness на ylptred\n" \
-                       "/info_mailing < <arg1: str>, arg2: str> - отправить рассылку arg1 всем членам отдела arg2\n" \
-                       "__Пример: /info mailing <на входе нужно больше безов, выходят без курток> Безопасность -> отправит всем безам сообщение внутри кавычек < >" \
-                       "Возможные значения arg2:\n" \
-                       "__Администрация__ - Коор + Зам Коора + Сервисный HR\n" \
-                       "Конфликт - конфликт менеджер\n" \
-                       "Далее: название отдела == значение arg2\n" \
-                       "__Админка__\n" \
-                       "__Программа__\n" \
-                       "__Игротехники__\n" \
-                       "__Пиар__\n" \
-                       "__Спонсорка__\n" \
-                       "__Закупки__\n" \
-                       "__Медиа__\n" \
-                       "__Оформление__\n" \
-                       "__Безопасность__\n" \
-                       "__Площадка__\n" \
-                       "__Финансы__\n" \
-                       "__Атмосфера__\n"
+                        "/stats - bot stats\n\n" \
+                        "/get_iss - list of unsolved issues\n\n" \
+                        "/get_iss <number> - full description of issue with user's contact\n\n" \
+                        "/delete_issues - delete all solved issues from DB\n\n" \
+                        "/delete_user <Tuple[arg1: str, arg2: str]> - забанить перечисленных юзеров по определенным причинам\n"\
+                        "Пример: /delete_user @skuikness спам @ylptred возврат -> удалит пользователя с тегом @skuikness по причине спам и пользователя с тегом @ylptred по причине возврат билета\n" \
+                        "Возможные значение arg2:\n" \
+                        "спам__\n" \
+                        "возврат\n\n" \
+                        "/get_logs now - получить логи\n\n" \
+                        "/replace_org_tag <arg1: str, arg2: str> - заменить arg1 тег орга на arg2 тег орга\n" \
+                        "Пример: /replace_org_tag @skuikness @ylptred -> заменит тег орга skuikness на ylptred\n\n" \
+                        "/info_mailing < <arg1: str>, arg2: str> - отправить рассылку arg1 всем членам отдела arg2\n" \
+                        "Пример: /info mailing <на входе нужно больше безов, выходят без курток> Безопасность -> отправит всем безам сообщение внутри кавычек < >\n\n" \
+                        "Возможные значения arg2:\n" \
+                        "Администрация - Коор + Зам Коора + Сервисный HR\n" \
+                        "Конфликт - конфликт менеджер\n\n" \
+                        "Далее: название отдела == значение arg2\n" \
+                        "Админка\n" \
+                        "Программа\n" \
+                        "Игротехники\n" \
+                        "Пиар\n" \
+                        "Спонсорка\n" \
+                        "Закупки\n" \
+                        "Медиа\n" \
+                        "Оформление\n" \
+                        "Безопасность\n" \
+                        "Площадка\n" \
+                        "Финансы\n" \
+                        "Атмосфера\n"
 
 
 
