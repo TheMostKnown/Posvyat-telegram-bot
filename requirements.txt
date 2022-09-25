@@ -53,3 +53,6 @@ typing~=3.7.4.3
 
 # Algorithms
 git+https://github.com/ylptred/autocorrect@master
+
+# utils
+schedule==1.1.0

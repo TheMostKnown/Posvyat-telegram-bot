@@ -1,5 +1,6 @@
 import datetime
 import telegram
+import schedule
 
 from django.utils.timezone import now
 
@@ -8,34 +9,27 @@ from tgbot.models import Organizer, User, Issue
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers import keyboard_utils as kb
 from tgbot.handlers import manage_data as md
+from tgbot.models import User, Guest, Organizer
+
+from logs.sending_logs import sending_logs
+
+error = 'Команда не была выполнена из-за неизвестной ошибки, возможно Вы передали неверный аргумент. Пожалуйста, перечитайте документацию по команде /admin и попробуйте снова'
 
 
 def admin(update, context):
     """ Show help info about all secret admins commands """
-    username = update.message.from_user['username']
+    u = User.get_user(update, context)
+    # if not u.is_admin:
+    # return
 
-    try:
-        user = Organizer.objects.get(tg_tag=username)
-    except Organizer.DoesNotExist:
-        return
-        
-    if not user.is_admin:
-        return
+    return update.message.reply_text(f'{st.secret_admin_commands}')
 
-    return update.message.reply_text(f'{st.secret_level}\n{st.secret_admin_commands}')
-    
 
 def stats(update, context):
     """ Show help info about all secret admins commands """
-    username = update.message.from_user['username']
-
-    try:
-        user = Organizer.objects.get(tg_tag=username)
-    except Organizer.DoesNotExist:
-        return
-        
-    if not user.is_admin:
-        return
+    u = User.get_user(update, context)
+    # if not u.is_admin:
+    # return
 
     text = f"""
         *Users*: {User.objects.count()}
@@ -43,16 +37,152 @@ def stats(update, context):
     """
 
     return update.message.reply_text(
-        text, 
+        text,
         parse_mode=telegram.ParseMode.MARKDOWN,
         disable_web_page_preview=True,
     )
 
 
+def delete_user(update, context):
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        return
+
+    try:
+        users_to_ban = []  # список юзеров для удаления
+        reasons = []  # список причин удаления
+        for arg in context.args:
+            if context.args.index(arg) % 2 == 0:
+                users_to_ban.append(arg)
+            else:
+                reasons.append(arg)
+
+        for arg in range(int(len(context.args) / 2)):
+            # получение чат айди юзера из бд и отправка ему уведомления об удалении
+            user = Guest.objects.filter(tg_tag=users_to_ban[arg])
+            user = user[0]
+            banned_user_text = f"Вы были удалены из нашего сервиса. Причина: {reasons[arg]}"
+            context.bot.send_message(chat_id=user.chat_id, text=banned_user_text)
+
+            # блокировка юзера в боте
+            user.is_banned = True
+            user.save()
+
+            # сообщение об успешном выполнении команды
+            done = f'Пользователь {users_to_ban[arg]} успешно забанен!'
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=done)
+
+    except Exception:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+
+
+def get_logs(update, context):
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        return
+
+    done = 'Команда выполнена успешно'
+
+    def send_logs():
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=f'Логи файла main:\n{sending_logs()[0]}\nЛоги файла django_request:\n{sending_logs()[1]}')
+
+    try:
+        if context.args[0].lower() == 'now':
+
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text=f'Логи файла main:\n{sending_logs()[0]}\nЛоги файла django_request:\n{sending_logs()[1]}')
+
+            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+
+        elif context.args[1].lower() == 'secs':
+            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            schedule.every(int(context.args[0])).seconds.do(send_logs)
+
+        elif context.args[1].lower() == 'mins':
+
+            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            schedule.every(int(context.args[0])).minutes.do(send_logs)
+
+
+        elif context.args.lower() == 'hour':
+
+            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            schedule.every().hour.do(send_logs)
+
+
+
+        elif context.args[1].lower() == 'day':
+
+            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            schedule.every().day.at(int(context.args[0])).do(send_logs)
+
+
+        else:
+            raise Exception
+
+
+    except Exception:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+
+
+def replace_org_tag(update, context):
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        return
+
+    try:
+        old_tag = context.args[0]
+        new_tag = context.args[1]
+        done = f'Тег {old_tag} был успешно заменен на тег {new_tag}'
+
+        if len(context.args) > 2:
+            raise Exception
+
+        org = Organizer.objects.filter(tg_tag=old_tag)
+        org = org[0]
+        context.bot.send_message(chat_id=update.effective_chat.id, text=f'old: {org.tg_tag}')
+        org.tg_tag = new_tag
+        context.bot.send_message(chat_id=update.effective_chat.id, text=f'new: {org.tg_tag}')
+        org.save()
+
+        context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+
+    except Exception:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+
+
+def info_mailing(update, context):
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        return
+
+
+    try:
+        start = context.args[1].find('<') + 1
+        end = context.args[1].find('>')
+        text = context.args[1][start:end]
+        done = 'Рассылка успешно завершена'
+        orgs_list = []
+
+        orgs = Organizer.objects.filter(department=context.args[2].lower())
+
+        for org in orgs:
+            context.bot.send_message(chat_id=org.chat_id, text=text)
+            orgs_list.append(org.tg_tag)
+
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=f'Рассылку получили пользователи с тегами: {orgs_list}')
+        context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+
+    except Exception:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+
+
 def get_issues(update, context):
     """" Shows list of unsolved issues in format:
         issue_number -- first DESC_LIMIT symbols of description
-
         Shows issue's full info you use command with issue's number as argument
         It also allows to change its status with the buttons
     """

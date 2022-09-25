@@ -208,9 +208,9 @@ class UserActionLog(models.Model):
 
 class Organizer(models.Model):
     id = models.BigAutoField(primary_key=True)
+    chat_id = models.CharField(max_length=256)
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
-    is_admin = models.BooleanField(default=False)
     tg_tag = models.CharField(max_length=256, unique=True)
     vk_link = models.CharField(max_length=256)
     phone = models.CharField(max_length=256)
@@ -228,6 +228,7 @@ class Room(models.Model):
 
 class Guest(models.Model):
     id = models.BigAutoField(primary_key=True)
+    chat_id = models.CharField(max_length=256)
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
     patronymic = models.CharField(max_length=256)

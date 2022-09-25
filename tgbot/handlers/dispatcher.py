@@ -36,6 +36,11 @@ def setup_dispatcher(dp):
     # admin commands
     dp.add_handler(CommandHandler("admin", admin.admin))
     dp.add_handler(CommandHandler("stats", admin.stats))
+    dp.add_handler(CommandHandler("delete_user", admin.delete_user))
+    dp.add_handler(CommandHandler("get_logs", admin.get_logs))
+    dp.add_handler(CommandHandler("replace_org_tag", admin.replace_org_tag))
+    dp.add_handler(CommandHandler("info_mailing", admin.info_mailing))
+
 
     dp.add_handler(CommandHandler("get_iss", admin.get_issues))
     dp.add_handler(CallbackQueryHandler(hnd.btn_set_status, pattern=f'^{md.SET_IN_PROGRESS}|{md.SET_NOT_FIXED}|{md.SET_FIXED}'))
