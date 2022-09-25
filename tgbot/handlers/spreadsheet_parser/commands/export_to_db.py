@@ -94,7 +94,6 @@ def get_init_data(
                     levels=levels
                 ).save()
 
-
     # getting info about admins
     admins_sheet = spreadsheet['Admins']
     for i in range(1, len(admins_sheet)):
