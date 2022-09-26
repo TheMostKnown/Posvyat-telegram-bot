@@ -41,6 +41,7 @@ services:
     build: .
     container_name: tgbot_autoparser
     command: python autoparser.py
+    restart: always
     volumes:
       - .:/code
     env_file:
