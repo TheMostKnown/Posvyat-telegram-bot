@@ -1,8 +1,12 @@
 import os
 import dj_database_url
 import dotenv
-
 from pathlib import Path
+from celery.schedules import crontab
+
+import dtb.tasks
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd party apps
-    # 'django_celery_beat',
+    'django_celery_beat',
 
     # local apps
     'tgbot.apps.TgbotConfig',
@@ -136,10 +140,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # -----> CELERY
-# REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379')
+REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379')
 # BROKER_URL = REDIS_URL
-# CELERY_BROKER_URL = REDIS_URL
-# CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 # CELERY_ACCEPT_CONTENT = ['application/json']
 # CELERY_TASK_SERIALIZER = 'json'
 # CELERY_RESULT_SERIALIZER = 'json'
@@ -226,3 +230,9 @@ LOGGING = {
 #     send_default_pii=True
 # )
 
+CELERY_BEAT_SCHEDULE = {
+    "autoparsing_task": {
+        "task": "dtb.tasks.autoparsing",
+        "schedule": crontab(minute="*/1"),
+    },
+}

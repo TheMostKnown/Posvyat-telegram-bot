@@ -26,6 +26,7 @@ services:
       - ./secrets/.env
     depends_on:
       - db
+      - redis
     entrypoint: ./entrypoint.sh
   bot:
     build: .
@@ -37,5 +38,33 @@ services:
       - ./secrets/.env
     depends_on:
       - web
+
+  redis:
+    image: redis:alpine
+
+  celery:
+    build: .
+    container_name: tgbot_celery
+    command: celery -A dtb worker -l info
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_DEBUG='True'
+    env_file:
+      - ./secrets/.env
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    container_name: tgbot_worker
+    command: celery -A dtb beat -l info
+    volumes:
+      - .:/code
+    env_file:
+      - ./secrets/.env
+    depends_on:
+      - redis
+
 volumes:
   postgres_data:
