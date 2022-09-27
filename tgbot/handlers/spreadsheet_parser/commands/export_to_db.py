@@ -25,7 +25,7 @@ def get_init_data(
 
     for i in range(1, len(levels_sheet)):
         level_num = int(levels_sheet[i][0])
-        level_info = levels_sheet[i][1]
+        level_info = levels_sheet[i][1].strip()
 
         if level_num != '':
             level = Level.objects.filter(id=level_num)
@@ -45,9 +45,9 @@ def get_init_data(
     commands_sheet = spreadsheet['Команды']
 
     for i in range(1, len(commands_sheet)):
-        name = commands_sheet[i][0]
-        arguments = commands_sheet[i][1]
-        desc = commands_sheet[i][2]
+        name = commands_sheet[i][0].strip()
+        arguments = commands_sheet[i][1].strip()
+        desc = commands_sheet[i][2].strip()
         admin = True if commands_sheet[i][3] == '1' else False
 
         if name != '':
@@ -73,8 +73,8 @@ def get_init_data(
     broadcasting_sheet = spreadsheet['Рассылки']
 
     for i in range(1, len(broadcasting_sheet)):
-        title = broadcasting_sheet[i][0]
-        text = broadcasting_sheet[i][1]
+        title = broadcasting_sheet[i][0].strip()
+        text = broadcasting_sheet[i][1].strip()
         levels = f'[{broadcasting_sheet[i][2]}]'
 
         if title != '':
@@ -97,9 +97,9 @@ def get_init_data(
     # getting info about admins
     admins_sheet = spreadsheet['Админы']
     for i in range(1, len(admins_sheet)):
-        surname = admins_sheet[i][0]
-        name = admins_sheet[i][1]
-        tg_tag = admins_sheet[i][2]
+        surname = admins_sheet[i][0].strip()
+        name = admins_sheet[i][1].strip()
+        tg_tag = admins_sheet[i][2].strip()
 
         if tg_tag != '':
             tg_tag = make_tg_tag(tg_tag)
@@ -129,13 +129,13 @@ def get_init_data(
     organizers_sheet = spreadsheet['Сетка Оргов']
 
     for i in range(2, len(organizers_sheet)):
-        surname = organizers_sheet[i][0]
-        name = organizers_sheet[i][1]
-        tg_tag = organizers_sheet[i][2]
-        vk_link = organizers_sheet[i][3]
-        phone = organizers_sheet[i][4]
-        department = organizers_sheet[i][5]
-        room = organizers_sheet[i][6]
+        surname = organizers_sheet[i][0].strip()
+        name = organizers_sheet[i][1].strip()
+        tg_tag = organizers_sheet[i][2].strip()
+        vk_link = organizers_sheet[i][3].strip()
+        phone = organizers_sheet[i][4].strip()
+        department = organizers_sheet[i][5].strip()
+        room = organizers_sheet[i][6].strip()
 
         if tg_tag != '':
             tg_tag = make_tg_tag(tg_tag)
@@ -167,15 +167,15 @@ def get_init_data(
     guests_sheet = spreadsheet['Участники']
 
     for i in range(1, len(guests_sheet)):
-        surname = guests_sheet[i][0]
-        name = guests_sheet[i][1]
-        patronymic = guests_sheet[i][2]
-        tg_tag = guests_sheet[i][24]
-        vk_link = guests_sheet[i][23]
-        phone = guests_sheet[i][22]
+        surname = guests_sheet[i][0].strip()
+        name = guests_sheet[i][1].strip()
+        patronymic = guests_sheet[i][2].strip()
+        tg_tag = guests_sheet[i][24].strip()
+        vk_link = guests_sheet[i][23].strip()
+        phone = guests_sheet[i][22].strip()
         levels = json.loads(f'[{guests_sheet[i][30]}]') if guests_sheet[i][30] != '' else []
-        room = guests_sheet[i][4]
-        team = guests_sheet[i][5]
+        room = guests_sheet[i][4].strip()
+        team = guests_sheet[i][5].strip()
 
         if tg_tag != '':
             tg_tag = make_tg_tag(tg_tag)
@@ -236,8 +236,8 @@ def get_init_data(
     organizers_schedule_sheet = spreadsheet['Сетка Оргов']
 
     for i in range(2, len(organizers_schedule_sheet)):
-        tg_tag = organizers_schedule_sheet[i][2]
-        tg_tag = make_tg_tag(tg_tag)
+        tg_tag = organizers_schedule_sheet[i][2].strip()
+        tg_tag = make_tg_tag(tg_tag).strip()
 
         org_schedule = OrganizerSchedule.objects.filter(tg_tag=tg_tag)
 
@@ -246,9 +246,11 @@ def get_init_data(
 
             if desc != '':
 
-                date = organizers_schedule_sheet[0][j]
-                start_time = organizers_schedule_sheet[1][j]
-                finish_time = organizers_schedule_sheet[1][j+1] if j + 1 < len(organizers_schedule_sheet[1]) else ''
+                date = organizers_schedule_sheet[0][j].strip()
+                start_time = organizers_schedule_sheet[1][j].strip()
+                finish_time = organizers_schedule_sheet[1][j+1].strip() \
+                    if j + 1 < len(organizers_schedule_sheet[1]) \
+                    else ''
 
                 schedule_item = org_schedule.filter(start_time=start_time, date=date)
 
@@ -300,8 +302,8 @@ def get_init_data(
     rooms_sheet = spreadsheet['Комнаты']
 
     for i in range(1, len(rooms_sheet)):
-        number = rooms_sheet[i][0]
-        capacity = rooms_sheet[i][1]
+        number = rooms_sheet[i][0].strip()
+        capacity = rooms_sheet[i][1].strip()
 
         if number != '':
             room = Room.objects.filter(number=number)
@@ -321,8 +323,8 @@ def get_init_data(
     scripts_sheet = spreadsheet['Скрипты']
 
     for i in range(1, len(scripts_sheet)):
-        title = scripts_sheet[i][0]
-        text = scripts_sheet[i][1]
+        title = scripts_sheet[i][0].strip()
+        text = scripts_sheet[i][1].strip()
 
         if title != '':
             script = Script.objects.filter(title=title)
@@ -342,9 +344,9 @@ def get_init_data(
     buttons_sheet = spreadsheet['Кнопки']
 
     for i in range(1, len(buttons_sheet)):
-        text = buttons_sheet[i][0]
-        title_from = buttons_sheet[i][1]
-        title_to = buttons_sheet[i][2]
+        text = buttons_sheet[i][0].strip()
+        title_from = buttons_sheet[i][1].strip()
+        title_to = buttons_sheet[i][2].strip()
 
         if text is not None:
             button = Script.objects.filter(text=text)
