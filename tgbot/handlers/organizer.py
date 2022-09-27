@@ -85,13 +85,14 @@ def depart_orgs(update, context):
 def depart_orgs_current_moment(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
+
     try:
         user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
 
     if len(context.args) == 0:
-        return context.bot.send_message(user_id, text=st.depart_no_argument)
+        return context.bot.send_message(user_id, text=st.depart_now_no_argument)
 
     depart = context.args[0].capitalize()
     # spell check and auto-fix
@@ -333,11 +334,13 @@ def get_guest_info(guest: Guest):
            f"ВК: {guest.vk_link}\n" \
            f"Комната: {guest.room}\n"
 
-    neighbors = Guest.objects.filter(room=guest.room).exclude(id=guest.id)
+    if guest.room != '':
+        neighbors = Guest.objects.filter(room=guest.room).exclude(id=guest.id)
 
-    info += f"Соседи:\n"
-    for neig in neighbors:
-        info += f"- {neig.surname} {neig.name} {neig.patronymic}\n"
+        info += f"Соседи:\n"
+        for neig in neighbors:
+            info += f"- {neig.surname} {neig.name} {neig.patronymic}\n"
+
     info += f"Команда: {guest.team}\n"
-    
+
     return info
