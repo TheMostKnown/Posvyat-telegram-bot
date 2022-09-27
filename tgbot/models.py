@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from tgbot import utils
 from tgbot.handlers.manage_data import FIRST_DAY, SECOND_DAY
 
+
 class Config(models.Model):
     """Модель настроек бота."""
 
@@ -310,4 +311,4 @@ class Command(models.Model):
     name = models.CharField(max_length=256)
     arguments = models.CharField(max_length=256)
     desc = models.CharField(max_length=256)
-    admin = models.CharField(max_length=256)
+    admin = models.BooleanField(default=False)

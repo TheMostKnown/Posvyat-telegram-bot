@@ -1,7 +1,7 @@
 import json
 
 from tgbot.handlers.spreadsheet_parser.spreadsheet_parser import get_data
-from tgbot.handlers.utils import make_domain
+from tgbot.handlers.utils import make_domain, make_tg_tag
 from tgbot.models import (
     Organizer, Room, Guest, OrganizerSchedule, GuestSchedule,
     Level, Broadcast, Script, Button, Command
@@ -102,6 +102,7 @@ def get_init_data(
         tg_tag = admins_sheet[i][2]
 
         if tg_tag != '':
+            tg_tag = make_tg_tag(tg_tag)
             admin = Organizer.objects.filter(tg_tag=tg_tag)
 
             if len(admin) > 0:
@@ -137,6 +138,7 @@ def get_init_data(
         room = organizers_sheet[i][6]
 
         if tg_tag != '':
+            tg_tag = make_tg_tag(tg_tag)
             organizer = Organizer.objects.filter(tg_tag=tg_tag)
 
             if organizer.count() > 0:
@@ -176,6 +178,7 @@ def get_init_data(
         team = guests_sheet[i][5]
 
         if tg_tag != '':
+            tg_tag = make_tg_tag(tg_tag)
             vk_link = make_domain(vk_link)
 
             guest = Guest.objects.filter(tg_tag=tg_tag)
@@ -234,6 +237,7 @@ def get_init_data(
 
     for i in range(2, len(organizers_schedule_sheet)):
         tg_tag = organizers_schedule_sheet[i][2]
+        tg_tag = make_tg_tag(tg_tag)
 
         org_schedule = OrganizerSchedule.objects.filter(tg_tag=tg_tag)
 

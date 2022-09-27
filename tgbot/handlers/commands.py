@@ -107,10 +107,10 @@ def issue(update, context):
     LIMIT_ISSUE = 3
     username = update.message.from_user['username']
     try:
-        user = Guest.objects.get(tg_tag = username)
+        user = Guest.objects.get(tg_tag=username)
     except Guest.DoesNotExist:
         try:
-            user = Organizer.objects.get(tg_tag = username)
+            user = Organizer.objects.get(tg_tag=username)
         except Organizer.DoesNotExist:
             return
     # spam-filter
@@ -151,7 +151,7 @@ def issue_cancel(update, context):
 
 
 def commands_list(update, context):
-    text = static_text.common_comands
+    text = 'Привет! Вот доступные тебе команды: \n' + static_text.common_comands
 
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
