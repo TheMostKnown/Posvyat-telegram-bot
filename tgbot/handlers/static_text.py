@@ -43,7 +43,8 @@ secret_admin_commands = "\n⚠️ Секретные команды админи
                         "/replace_org_tag <arg1: str, arg2: str> - заменить arg1 тег орга на arg2 тег орга\n" \
                         "Пример: /replace_org_tag @skuikness @ylptred -> заменит тег орга skuikness на ylptred\n\n" \
                         "/info_mailing < <arg1: str>, arg2: str> - отправить рассылку arg1 всем членам отдела arg2\n" \
-                        "Пример: /info mailing <на входе нужно больше безов, выходят без курток> Безопасность -> отправит всем безам сообщение внутри кавычек < >\n\n" \
+                        "Пример: /info_mailing <на входе нужно больше безов, выходят без курток> Безопасность" \
+                        " -> отправит всем безам сообщение внутри кавычек < >\n\n" \
                         "Возможные значения arg2:\n" \
                         "Администрация - Коор + Зам Коора + Сервисный HR\n" \
                         "Конфликт - конфликт менеджер\n\n" \
@@ -98,3 +99,9 @@ guest_no_arg = "Введите вместе с командой любой из 
                 "Фамилия Имя | Тэг в ТГ(без @) | ссылка на ВК | Фамилия | Имя\n" \
                     "Например:\n/guest Иванов\n/guest gevorg_tsat"
 guest_too_much_args = "Вы ввели слишком много данных\n"
+
+notification_no_argument = 'Вы ввели недостаточно аргументов'
+notification_broadcast_success = 'Рассылка успешно завершена'
+notification_broadcast_address = 'Рассылку получили: '
+notification_banned_user_reason = 'Вы были удалены из нашего сервиса. Причины: '
+notification_command_success = 'Команда выполнена успешно'

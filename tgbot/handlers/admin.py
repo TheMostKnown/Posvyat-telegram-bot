@@ -13,14 +13,13 @@ from tgbot.models import User, Guest, Organizer
 
 from logs.sending_logs import sending_logs
 
-error = 'Команда не была выполнена из-за неизвестной ошибки, возможно Вы передали неверный аргумент. Пожалуйста, перечитайте документацию по команде /admin и попробуйте снова'
+error = 'Команда не была выполнена из-за неизвестной ошибки, возможно Вы передали неверный аргумент. Пожалуйста, перечитайте документацию по команде /help и попробуйте снова'
 
 
 def admin(update, context):
     """ Show help info about all secret admins commands """
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
-
 
     try:
         user = Organizer.objects.get(tg_tag=username)
@@ -86,7 +85,7 @@ def delete_user(update, context):
             # получение чат айди юзера из бд и отправка ему уведомления об удалении
             user = Guest.objects.get(tg_tag=users_to_ban[arg])
             user = user[0]
-            banned_user_text = f"Вы были удалены из нашего сервиса. Причина: {reasons[arg]}"
+            banned_user_text = st.notification_banned_user_reason + f'{reasons[arg]}'
             context.bot.send_message(chat_id=user.chat_id, text=banned_user_text)
 
             # блокировка юзера в боте
@@ -95,8 +94,7 @@ def delete_user(update, context):
 
             # сообщение об успешном выполнении команды
             done = f'Пользователь {users_to_ban[arg]} успешно забанен!'
-            context.bot.send_message(user_id,
-                                     text=done)
+            context.bot.send_message(user_id, text=done)
 
     except Exception:
         context.bot.send_message(user_id, text=error)
@@ -117,17 +115,23 @@ def get_logs(update, context):
     if not user.is_admin:
         return
 
-    done = 'Команда выполнена успешно'
+    done = st.notification_command_success
 
     def send_logs():
-        context.bot.send_message(user_id,
-                                 text=f'Логи файла main:\n{sending_logs()[0]}\nЛоги файла django_request:\n{sending_logs()[1]}')
+        context.bot.send_message(
+            user_id,
+            text=f'Логи файла main:\n{sending_logs()[0]}\n'
+                 f'Логи файла django_request:\n{sending_logs()[1]}'
+        )
 
     try:
         if context.args[0].lower() == 'now':
 
-            context.bot.send_message(user_id,
-                                     text=f'Логи файла main:\n{sending_logs()[0]}\nЛоги файла django_request:\n{sending_logs()[1]}')
+            context.bot.send_message(
+                user_id,
+                text=f'Логи файла main:\n{sending_logs()[0]}\n'
+                     f'Логи файла django_request:\n{sending_logs()[1]}'
+            )
 
             context.bot.send_message(user_id, text=done)
 
@@ -136,27 +140,19 @@ def get_logs(update, context):
             schedule.every(int(context.args[0])).seconds.do(send_logs)
 
         elif context.args[1].lower() == 'mins':
-
             context.bot.send_message(user_id, text=done)
             schedule.every(int(context.args[0])).minutes.do(send_logs)
 
-
         elif context.args.lower() == 'hour':
-
             context.bot.send_message(user_id, text=done)
             schedule.every().hour.do(send_logs)
 
-
-
         elif context.args[1].lower() == 'day':
-
             context.bot.send_message(user_id, text=done)
             schedule.every().day.at(int(context.args[0])).do(send_logs)
 
-
         else:
             raise Exception
-
 
     except Exception:
         context.bot.send_message(user_id, text=error)
@@ -212,25 +208,26 @@ def info_mailing(update, context):
     if not user.is_admin:
         return
 
-
     try:
-        message_text = update.message.text
-        start = message_text.find('<') + 1
-        end = message_text.find('>')
-        text = message_text[start:end]
-        department = message_text[message_text.find('>') + 2:]
-        done = 'Рассылка успешно завершена'
+        end = context.args[0].find('>')
+        text = context.args[0][1:end]
+        department = context.args[1]
         orgs_list = []
 
-        orgs = Organizer.objects.filter(department=department.lower())
+        orgs = []
+        for org in Organizer.objects.all():
+            if department in org.department:
+                orgs.append(org)
 
         for org in orgs:
             context.bot.send_message(chat_id=org.chat_id, text=text)
             orgs_list.append(org.tg_tag)
 
-        context.bot.send_message(user_id,
-                                     text=f'Рассылку получили пользователи с тегами: {orgs_list}')
-        context.bot.send_message(user_id, text=done)
+        context.bot.send_message(
+            user_id,
+            text=st.notification_broadcast_address + f'{", ".join(orgs_list)}'
+        )
+        context.bot.send_message(user_id, text=st.notification_broadcast_success)
 
     except Exception:
         context.bot.send_message(user_id, text=error)
