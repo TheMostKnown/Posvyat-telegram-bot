@@ -18,18 +18,33 @@ error = 'Команда не была выполнена из-за неизве�
 
 def admin(update, context):
     """ Show help info about all secret admins commands """
-    u = User.get_user(update, context)
-    # if not u.is_admin:
-    # return
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+
+    if not user.is_admin:
+        return
 
     return update.message.reply_text(f'{st.secret_admin_commands}')
 
 
 def stats(update, context):
     """ Show help info about all secret admins commands """
-    u = User.get_user(update, context)
-    # if not u.is_admin:
-    # return
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+
+    if not user.is_admin:
+        return
 
     text = f"""
         *Users*: {User.objects.count()}
@@ -44,8 +59,18 @@ def stats(update, context):
 
 
 def delete_user(update, context):
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    """
+        deletes the listed users for the listed reasons
+    """
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+
+    if not user.is_admin:
         return
 
     try:
@@ -59,7 +84,7 @@ def delete_user(update, context):
 
         for arg in range(int(len(context.args) / 2)):
             # получение чат айди юзера из бд и отправка ему уведомления об удалении
-            user = Guest.objects.filter(tg_tag=users_to_ban[arg])
+            user = Guest.objects.get(tg_tag=users_to_ban[arg])
             user = user[0]
             banned_user_text = f"Вы были удалены из нашего сервиса. Причина: {reasons[arg]}"
             context.bot.send_message(chat_id=user.chat_id, text=banned_user_text)
@@ -70,52 +95,62 @@ def delete_user(update, context):
 
             # сообщение об успешном выполнении команды
             done = f'Пользователь {users_to_ban[arg]} успешно забанен!'
-            context.bot.send_message(chat_id=update.effective_chat.id,
+            context.bot.send_message(user_id,
                                      text=done)
 
     except Exception:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+        context.bot.send_message(user_id, text=error)
 
 
 def get_logs(update, context):
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    """
+        Sends logs from the main.log and django_request.log files
+    """
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+
+    if not user.is_admin:
         return
 
     done = 'Команда выполнена успешно'
 
     def send_logs():
-        context.bot.send_message(chat_id=update.effective_chat.id,
+        context.bot.send_message(user_id,
                                  text=f'Логи файла main:\n{sending_logs()[0]}\nЛоги файла django_request:\n{sending_logs()[1]}')
 
     try:
         if context.args[0].lower() == 'now':
 
-            context.bot.send_message(chat_id=update.effective_chat.id,
+            context.bot.send_message(user_id,
                                      text=f'Логи файла main:\n{sending_logs()[0]}\nЛоги файла django_request:\n{sending_logs()[1]}')
 
-            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            context.bot.send_message(user_id, text=done)
 
         elif context.args[1].lower() == 'secs':
-            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            context.bot.send_message(user_id, text=done)
             schedule.every(int(context.args[0])).seconds.do(send_logs)
 
         elif context.args[1].lower() == 'mins':
 
-            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            context.bot.send_message(user_id, text=done)
             schedule.every(int(context.args[0])).minutes.do(send_logs)
 
 
         elif context.args.lower() == 'hour':
 
-            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            context.bot.send_message(user_id, text=done)
             schedule.every().hour.do(send_logs)
 
 
 
         elif context.args[1].lower() == 'day':
 
-            context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+            context.bot.send_message(user_id, text=done)
             schedule.every().day.at(int(context.args[0])).do(send_logs)
 
 
@@ -124,12 +159,22 @@ def get_logs(update, context):
 
 
     except Exception:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+        context.bot.send_message(user_id, text=error)
 
 
 def replace_org_tag(update, context):
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    """
+        Replaces the first organizer tag with the second one
+    """
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+
+    if not user.is_admin:
         return
 
     try:
@@ -140,44 +185,55 @@ def replace_org_tag(update, context):
         if len(context.args) > 2:
             raise Exception
 
-        org = Organizer.objects.filter(tg_tag=old_tag)
+        org = Organizer.objects.get(tg_tag=old_tag)
         org = org[0]
-        context.bot.send_message(chat_id=update.effective_chat.id, text=f'old: {org.tg_tag}')
         org.tg_tag = new_tag
-        context.bot.send_message(chat_id=update.effective_chat.id, text=f'new: {org.tg_tag}')
         org.save()
 
-        context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+        context.bot.send_message(user_id, text=done)
 
     except Exception:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+        context.bot.send_message(user_id, text=error)
 
 
 def info_mailing(update, context):
-    u = User.get_user(update, context)
-    if not u.is_admin:
+    """
+        Sends a newsletter to all members of a certain department
+    """
+
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+
+    if not user.is_admin:
         return
 
 
     try:
-        start = context.args[1].find('<') + 1
-        end = context.args[1].find('>')
-        text = context.args[1][start:end]
+        message_text = update.message.text
+        start = message_text.find('<') + 1
+        end = message_text.find('>')
+        text = message_text[start:end]
+        department = message_text[message_text.find('>') + 2:]
         done = 'Рассылка успешно завершена'
         orgs_list = []
 
-        orgs = Organizer.objects.filter(department=context.args[2].lower())
+        orgs = Organizer.objects.filter(department=department.lower())
 
         for org in orgs:
             context.bot.send_message(chat_id=org.chat_id, text=text)
             orgs_list.append(org.tg_tag)
 
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=f'Рассылку получили пользователи с тегами: {orgs_list}')
-        context.bot.send_message(chat_id=update.effective_chat.id, text=done)
+        context.bot.send_message(user_id,
+                                     text=f'Рассылку получили пользователи с тегами: {orgs_list}')
+        context.bot.send_message(user_id, text=done)
 
     except Exception:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=error)
+        context.bot.send_message(user_id, text=error)
 
 
 def get_issues(update, context):

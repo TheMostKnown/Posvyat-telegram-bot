@@ -90,3 +90,9 @@ def make_domain(link: str) -> str:
     domain = re.sub(r'[@*]?|(.*vk.com/)', '', link.lower())
 
     return domain
+
+
+def make_tg_tag(link: str) -> str:
+    tag = re.sub(r'[@*]?|(.*t.me/)', '', link)
+
+    return tag

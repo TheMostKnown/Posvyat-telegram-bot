@@ -37,5 +37,16 @@ services:
       - ./secrets/.env
     depends_on:
       - web
+  autoparser:
+    build: .
+    container_name: tgbot_autoparser
+    command: python autoparser.py
+    restart: always
+    volumes:
+      - .:/code
+    env_file:
+      - ./secrets/.env
+    depends_on:
+      - db
 volumes:
   postgres_data:

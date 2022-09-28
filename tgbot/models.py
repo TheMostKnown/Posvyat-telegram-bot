@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from tgbot import utils
 from tgbot.handlers.manage_data import FIRST_DAY, SECOND_DAY
 
+
 class Config(models.Model):
     """Модель настроек бота."""
 
@@ -51,7 +52,7 @@ class User(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return f'@{self.username}' if self.username is not None else f'{self.user_id}'
 
@@ -83,7 +84,7 @@ class User(models.Model):
             return cls.objects.filter(user_id=int(username)).first()
         return cls.objects.filter(username__iexact=username).first()
 
-    def invited_users(self):  # --> User queryset 
+    def invited_users(self):  # --> User queryset
         return User.objects.filter(deep_link=str(self.user_id), created_at__gt=self.created_at)
 
     class Meta:
@@ -211,6 +212,7 @@ class Organizer(models.Model):
     chat_id = models.CharField(max_length=256)
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
+    is_admin = models.BooleanField(default=False)
     tg_tag = models.CharField(max_length=256, unique=True)
     vk_link = models.CharField(max_length=256)
     phone = models.CharField(max_length=256)
@@ -229,6 +231,7 @@ class Room(models.Model):
 class Guest(models.Model):
     id = models.BigAutoField(primary_key=True)
     chat_id = models.CharField(max_length=256)
+    is_banned = models.BooleanField(default=False)
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
     patronymic = models.CharField(max_length=256)
@@ -311,4 +314,4 @@ class Command(models.Model):
     name = models.CharField(max_length=256)
     arguments = models.CharField(max_length=256)
     desc = models.CharField(max_length=256)
-    admin = models.CharField(max_length=256)
+    admin = models.BooleanField(default=False)

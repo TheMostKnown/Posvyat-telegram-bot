@@ -37,7 +37,7 @@ secret_admin_commands = "\n⚠️ Секретные команды админи
                         "/delete_user <Tuple[arg1: str, arg2: str]> - забанить перечисленных юзеров по определенным причинам\n"\
                         "Пример: /delete_user @skuikness спам @ylptred возврат -> удалит пользователя с тегом @skuikness по причине спам и пользователя с тегом @ylptred по причине возврат билета\n" \
                         "Возможные значение arg2:\n" \
-                        "спам\n" \
+                        "спам__\n" \
                         "возврат\n\n" \
                         "/get_logs now - получить логи\n\n" \
                         "/replace_org_tag <arg1: str, arg2: str> - заменить arg1 тег орга на arg2 тег орга\n" \
