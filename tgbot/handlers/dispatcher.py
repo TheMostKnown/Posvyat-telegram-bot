@@ -18,6 +18,7 @@ from telegram.ext import (
 
 from dtb.settings import TELEGRAM_TOKEN
 
+from tgbot.handlers.spreadsheet_parser.commands.restart_parser import restart_parser
 from tgbot.handlers import admin, commands, files, location, organizer
 from tgbot.handlers.commands import broadcast_command_with_message
 from tgbot.handlers import handlers as hnd
@@ -34,8 +35,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("start", commands.commands_list))
     dp.add_handler(CommandHandler("help", commands.commands_list))
     # admin commands
-    dp.add_handler(CommandHandler("admin", admin.admin))
-    dp.add_handler(CommandHandler("stats", admin.stats))
+    dp.add_handler(CommandHandler("restart_parser", restart_parser))
 
     dp.add_handler(CommandHandler("get_iss", admin.get_issues))
     dp.add_handler(CallbackQueryHandler(hnd.btn_set_status, pattern=f'^{md.SET_IN_PROGRESS}|{md.SET_NOT_FIXED}|{md.SET_FIXED}'))
@@ -55,6 +55,8 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("depart_now", organizer.depart_orgs_current_moment))
     dp.add_handler(CommandHandler("schedule", organizer.schedule))
     dp.add_handler(CommandHandler("guest", organizer.guest_info))
+    dp.add_handler(CommandHandler("departs", organizer.depart_list))
+    dp.add_handler(CommandHandler("team", organizer.get_team))
     # base buttons
     dp.add_handler(CallbackQueryHandler(hnd.btn1_hnd, pattern=f'^{md.BTN_1}'))
     dp.add_handler(CallbackQueryHandler(hnd.btn2_hnd, pattern=f'^{md.BTN_2}'))
