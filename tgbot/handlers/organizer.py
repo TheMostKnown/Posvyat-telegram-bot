@@ -278,14 +278,24 @@ def guest_info(update, context):
 def depart_list(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
+
     try:
         user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
-    context.bot.send_message(
+
+    all_orgs = Organizer.objects.all()
+    orgs_of_dep = list()
+    departs = set()
+    for org in all_orgs:
+        deps_list = org.department.split(",")
+        for depart in deps_list:
+            departs.add(depart)
+    return context.bot.send_message(
         user_id,
-        text = '\n'.join(md.DEPART_LIST)
-        )
+        text='\n'.join(departs)
+    )
+
 
 def get_team(update, context):
     username = update.message.from_user['username']

@@ -55,7 +55,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("depart_now", organizer.depart_orgs_current_moment))
     dp.add_handler(CommandHandler("schedule", organizer.schedule))
     dp.add_handler(CommandHandler("guest", organizer.guest_info))
-    dp.add_handler(CommandHandler("departlist", organizer.depart_list))
+    dp.add_handler(CommandHandler("departs", organizer.depart_list))
     dp.add_handler(CommandHandler("team", organizer.get_team))
     # base buttons
     dp.add_handler(CallbackQueryHandler(hnd.btn1_hnd, pattern=f'^{md.BTN_1}'))
