@@ -144,3 +144,5 @@ dmypy.json
 
 #Docker
 .Dockerfile.swp
+creds.json
+token.json
