@@ -352,22 +352,29 @@ def get_schedule(tg_tag: str):
     date = current_time.strftime("%d.%m.%Y")
 
     # For test use commented vars instead of actual
-    # start_time = dt.time(minute=30, hour = 9).strftime("%H:%M")
-    # date = dt.date(day=2, month=10, year=2022).strftime("%d.%m.%Y")
+    #start_time = dt.time(minute=0, hour = 16).strftime("%H:%M")
+    #date = dt.date(day=1, month=10, year=2022).strftime("%d.%m.%Y")
+    #current_time = dt.datetime.strptime(date+' '+ start_time, "%d.%m.%Y %H:%M")
 
+    if date[0] == '0':
+        date = date[1:]
+    if start_time[0] == '0':
+        start_time = start_time[1:]
     
-    events.filter(date__gte=date)
-    events.exclude(date=date, start_time__lt=start_time)
-    events.order_by('date','start_time')
-
-    if events.count() == 0:
+    events = list(events)
+    events = list(filter(
+        lambda x: current_time <= dt.datetime.strptime(x.date+' '+ x.start_time, "%d.%m.%Y %H:%M"),
+        events
+    ))
+    if len(events) == 0:
         return "No event"
-    
+    events.sort(
+        key=lambda x: dt.datetime.strptime(x.date+' '+ x.start_time, "%d.%m.%Y %H:%M") 
+    )
     current_action = events[0].desc
     current_start_time = events[0].start_time
     current_start_date = events[0].date
     current_end_time = events[0].finish_time
-
     for event in events[1:]:
         if current_action == event.desc:
             current_end_time = event.finish_time
@@ -383,7 +390,7 @@ def get_schedule(tg_tag: str):
     sched += f'*{current_action}* в {day} день с {current_start_time} до ...'
 
     return sched
-
+    
 
 def get_guest_info(guest: Guest):
     info = f"ФИО: {guest.surname} {guest.name} {guest.patronymic}\n" \
