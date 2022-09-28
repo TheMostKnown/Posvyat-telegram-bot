@@ -287,10 +287,12 @@ def depart_list(update, context):
     all_orgs = Organizer.objects.all()
     orgs_of_dep = list()
     departs = set()
+
     for org in all_orgs:
         deps_list = org.department.split(",")
         for depart in deps_list:
             departs.add(depart)
+
     return context.bot.send_message(
         user_id,
         text='\n'.join(departs)
@@ -301,6 +303,7 @@ def get_team(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
     text = ""
+
     try:
         user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
@@ -315,9 +318,11 @@ def get_team(update, context):
 
     if teammates.count() == 0:
         return context.bot.send_message(user_id, text=st.team_not_found)
+
     text += f"Команда №{context.args[0]}\n"
     for guest in teammates:
         text += f"{guest.surname} {guest.name} {guest.patronymic} t.me/{guest.tg_tag}\n"
+
     return context.bot.send_message(user_id, text=text)
 
 
@@ -362,9 +367,9 @@ def get_schedule(tg_tag: str):
     date = current_time.strftime("%d.%m.%Y")
 
     # For test use commented vars instead of actual
-    #start_time = dt.time(minute=0, hour = 16).strftime("%H:%M")
-    #date = dt.date(day=1, month=10, year=2022).strftime("%d.%m.%Y")
-    #current_time = dt.datetime.strptime(date+' '+ start_time, "%d.%m.%Y %H:%M")
+    # start_time = dt.time(minute=0, hour = 16).strftime("%H:%M")
+    # date = dt.date(day=1, month=10, year=2022).strftime("%d.%m.%Y")
+    # current_time = dt.datetime.strptime(date+' '+ start_time, "%d.%m.%Y %H:%M")
 
     if date[0] == '0':
         date = date[1:]
@@ -376,11 +381,14 @@ def get_schedule(tg_tag: str):
         lambda x: current_time <= dt.datetime.strptime(x.date+' '+ x.start_time, "%d.%m.%Y %H:%M"),
         events
     ))
+
     if len(events) == 0:
         return "No event"
+
     events.sort(
         key=lambda x: dt.datetime.strptime(x.date+' '+ x.start_time, "%d.%m.%Y %H:%M") 
     )
+
     current_action = events[0].desc
     current_start_time = events[0].start_time
     current_start_date = events[0].date

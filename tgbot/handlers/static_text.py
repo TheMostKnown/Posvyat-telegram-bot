@@ -20,8 +20,11 @@ broadcast_header = "This message will be sent to all users.\n\n"
 declined_message_broadcasting = "Рассылка сообщений отклонена❌\n\n"
 error_with_markdown = "Невозможно обработать ваш текст в формате Markdown."
 specify_word_with_error = " У вас ошибка в слове "
+
+
 common_comands = "/help -- Список доступных команд\n" \
-                "/support -- Обращение в Техподдержку\n" # need to fill
+                "/support -- Обращение в Техподдержку\n"  # need to fill
+
 organizer_commands = "\nКоманды Организатора\n" \
                     "/room <номер комнаты> -- полная информация о комнате\n" \
                     "/departs -- Список отделов\n" \
@@ -29,13 +32,13 @@ organizer_commands = "\nКоманды Организатора\n" \
                     "/depart_now <Отдел> -- Список отдела с активными точками каждого организатора\n" \
                     "/schedule <Фамилия Имя|tg_tag|vklink|номер телефон> -- расписание организатора\n" \
                     "/guest <Фамилия Имя|tg_tag|vklink|номер телефон> -- полная информация о госте\n" \
-                    "/team <Номер команды> -- Спсиок участников из определенной команды\n"
-secret_admin_commands = "\n⚠️ Секретные команды администратора\n" \
-                        "/stats - bot stats\n" \
-                        "/get_iss - list of unsolved issues\n" \
-                        "/get_iss <number> - full description of issue with user's contact\n" \
-                        "/delete_issues - delete all solved issues from DB\n"
+                    "/team <Номер команды> -- Список участников из определенной команды\n"
 
+secret_admin_commands = "\n⚠️ Секретные команды администратора\n" \
+                        "/restart_parser - ручной перезапуск парсера\n" \
+                        "/get_iss - список все незакрытых тикетов\n" \
+                        "/get_iss <number> - полное описание тикета\n" \
+                        "/delete_issues - удалить все закрытые тикеты из БД\n"
 
 
 support_start = "Опиши свою проблему ОДНИМ СООБЩЕНИЕМ или нажми /cancel если передумал"
@@ -77,3 +80,7 @@ guest_too_much_args = "Вы ввели слишком много данных\n"
 
 team_no_arg = "Вы забыли ввести Номер команды.\n\nПример корректного ввода:\n/team 5"
 team_not_found = "Команда с таким номером не найдена\n"
+
+parser_notification_success = 'Успешный Парсинг!'
+
+notification_no_rights = 'У Вас не хватает прав для выполнения этой команды'
