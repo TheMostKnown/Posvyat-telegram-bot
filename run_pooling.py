@@ -1,6 +1,7 @@
 import django
 import os
 import logging
+from datetime import datetime
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dtb.settings')
 django.setup()
@@ -22,4 +23,5 @@ if __name__ == "__main__":
         creds_file_name=GOOGLE_CREDS_PATH,
         token_file_name=GOOGLE_TOKEN_PATH
     )
+    print(f"Launching bot at {datetime.now().time().strftime('%H:%M')}")
     run_pooling()
