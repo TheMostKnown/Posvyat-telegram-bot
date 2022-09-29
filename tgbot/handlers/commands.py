@@ -155,6 +155,20 @@ def commands_list(update, context):
 
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
+
+    try:
+        guest = Guest.objects.get(tg_tag=username)
+        guest[0].chat_id = user_id
+        guest.save()
+    except Guest.DoesNotExist:
+        try:
+            org = Organizer.objects.get(tg_tag=username)
+            org[0].chat_id = user_id
+            org.save()
+
+        except Organizer.DoesNotExist:
+            return
+
     try:
         user = Organizer.objects.get(tg_tag=username)
         text += static_text.organizer_commands

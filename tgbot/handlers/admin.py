@@ -290,13 +290,7 @@ def delete_issues(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
 
-    try:
-        user = Organizer.objects.get(tg_tag=username)
-    except Organizer.DoesNotExist:
-        return
 
-    if not user.is_admin:
-        return
 
     context.bot.send_message(
         user_id, text=st.delete_issues_choose,
