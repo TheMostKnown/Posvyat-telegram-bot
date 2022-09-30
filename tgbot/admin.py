@@ -78,7 +78,7 @@ class ConfigAdmin(admin.ModelAdmin):
 @admin.register(Organizer)
 class OrganizersAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'surname', 'name',
+        'id', 'chat_id', 'surname', 'name',
         'is_admin', 'tg_tag', 'vk_link',
         'phone', 'room', 'department'
     ]

@@ -5,6 +5,7 @@ import schedule
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dtb.settings')
 django.setup()
 
+from tgbot.handlers.dispatcher import bot
 from tgbot.handlers.spreadsheet_parser.commands.export_to_db import get_init_data
 from dtb.settings import GOOGLE_TABLE_ID, GOOGLE_TOKEN_PATH, GOOGLE_CREDS_PATH
 
@@ -21,7 +22,8 @@ def autoparsing():
     get_init_data(
         spreadsheet_id=GOOGLE_TABLE_ID,
         creds_file_name=GOOGLE_CREDS_PATH,
-        token_file_name=GOOGLE_TOKEN_PATH
+        token_file_name=GOOGLE_TOKEN_PATH,
+        bot = bot
     )
     print(f' Successfull AutoParsing ')
 

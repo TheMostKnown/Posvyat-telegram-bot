@@ -107,6 +107,7 @@ class Migration(migrations.Migration):
             name='Organizer',
             fields=[
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
+                ('chat_id', models.IntegerField()),
                 ('surname', models.CharField(max_length=256)),
                 ('name', models.CharField(max_length=256)),
                 ('is_admin', models.BooleanField(default=False)),

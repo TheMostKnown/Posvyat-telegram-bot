@@ -209,6 +209,7 @@ class UserActionLog(models.Model):
 
 class Organizer(models.Model):
     id = models.BigAutoField(primary_key=True)
+    chat_id = models.IntegerField()
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
     is_admin = models.BooleanField(default=False)
