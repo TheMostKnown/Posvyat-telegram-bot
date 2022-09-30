@@ -177,9 +177,6 @@ def time_to_move(context: CallbackContext):
                 text = f"Смена деятельности с {item.start_time} - {desc}"
             )
 
-    
-    
-
 
 def commands_list(update, context):
     text = 'Привет! Вот доступные тебе команды: \n' + static_text.common_comands
