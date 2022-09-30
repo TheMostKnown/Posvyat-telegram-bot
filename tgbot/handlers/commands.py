@@ -53,7 +53,7 @@ def stats(update, context):
         user = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
-        
+
     if not user.is_admin:
         return
 
@@ -63,7 +63,7 @@ def stats(update, context):
     """
 
     return update.message.reply_text(
-        text, 
+        text,
         parse_mode=telegram.ParseMode.MARKDOWN,
         disable_web_page_preview=True,
     )
@@ -78,7 +78,7 @@ def broadcast_command_with_message(update, context):
         u = Organizer.objects.get(tg_tag=username)
     except Organizer.DoesNotExist:
         return
-    
+
     if not u.is_admin:
         text = static_text.broadcast_no_access
         markup = None
@@ -122,7 +122,7 @@ def issue(update, context):
             text=static_text.issue_limit
         )
         return ConversationHandler.END
-    
+
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=static_text.support_start
@@ -225,4 +225,3 @@ def commands_list(update, context):
     if user.is_admin:
         text += static_text.secret_admin_commands
     return context.bot.send_message(user_id, text=text)
-    

@@ -57,6 +57,8 @@ class Migration(migrations.Migration):
             name='Guest',
             fields=[
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
+                ('chat_id', models.IntegerField(default=0)),
+                ('is_banned', models.BooleanField(default=False)),
                 ('surname', models.CharField(max_length=256)),
                 ('name', models.CharField(max_length=256)),
                 ('patronymic', models.CharField(max_length=256)),
@@ -107,7 +109,7 @@ class Migration(migrations.Migration):
             name='Organizer',
             fields=[
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('chat_id', models.IntegerField()),
+                ('chat_id', models.IntegerField(default=0)),
                 ('surname', models.CharField(max_length=256)),
                 ('name', models.CharField(max_length=256)),
                 ('is_admin', models.BooleanField(default=False)),
@@ -187,7 +189,7 @@ class Migration(migrations.Migration):
                 ('region', models.CharField(max_length=128)),
                 ('territory', models.CharField(max_length=128)),
                 ('postal', models.CharField(max_length=128)),
-                ('postal_ext', models.CharField(max_length=128)),
+                ('posal_ext', models.CharField(max_length=128)),
                 ('country_code', models.CharField(max_length=32)),
                 ('lng', models.DecimalField(decimal_places=18, max_digits=21)),
                 ('lat', models.DecimalField(decimal_places=18, max_digits=21)),

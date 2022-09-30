@@ -92,7 +92,7 @@ class RoomAdmin(admin.ModelAdmin):
 @admin.register(Guest)
 class GuestAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'levels', 'surname', 'name', 'patronymic',
+        'id', 'chat_id', 'levels', 'surname', 'name', 'patronymic',
         'phone', 'room', 'tg_tag', 'vk_link', 'texts', 'team'
     ]
 
