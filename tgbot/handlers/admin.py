@@ -223,7 +223,7 @@ def info_mailing(update, context):
                 orgs.append(org)
 
         for org in orgs:
-            if org.chat_id != '':
+            if org.chat_id is not None:
                 done.append(org.tg_tag)
                 context.bot.send_message(chat_id=org.chat_id, text=text)
             else:

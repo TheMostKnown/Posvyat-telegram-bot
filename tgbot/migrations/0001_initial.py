@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
             name='Guest',
             fields=[
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('chat_id', models.CharField(max_length=256)),
+                ('chat_id', models.CharField(default=None)),
                 ('is_banned', models.BooleanField(default=False)),
                 ('surname', models.CharField(max_length=256)),
                 ('name', models.CharField(max_length=256)),
@@ -109,7 +109,7 @@ class Migration(migrations.Migration):
             name='Organizer',
             fields=[
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('chat_id', models.CharField(max_length=256)),
+                ('chat_id', models.CharField(default=None)),
                 ('surname', models.CharField(max_length=256)),
                 ('name', models.CharField(max_length=256)),
                 ('is_admin', models.BooleanField(default=False)),
