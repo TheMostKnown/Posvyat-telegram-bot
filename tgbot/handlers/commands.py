@@ -189,6 +189,8 @@ def commands_list(update, context):
 
     try:
         user = Organizer.objects.get(tg_tag=username)
+        user.chat_id = user_id
+        user.save()
         text += static_text.organizer_commands
     except Organizer.DoesNotExist:
         return context.bot.send_message(user_id, text=text)

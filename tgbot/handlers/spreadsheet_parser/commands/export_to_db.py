@@ -1,4 +1,7 @@
 import json
+from typing import Optional
+
+from telegram import Bot
 
 from tgbot.handlers.spreadsheet_parser.spreadsheet_parser import get_data
 from tgbot.handlers.utils import make_domain, make_tg_tag
@@ -11,7 +14,8 @@ from tgbot.models import (
 def get_init_data(
         spreadsheet_id: str,
         creds_file_name: str,
-        token_file_name: str
+        token_file_name: str,
+        bot: Optional[Bot] = None
 ) -> None:
 
     spreadsheet = get_data(
@@ -117,6 +121,7 @@ def get_init_data(
                 Organizer(
                     surname=surname,
                     name=name,
+                    chat_id = 0,
                     is_admin=True,
                     tg_tag=tg_tag,
                     vk_link='',
@@ -156,6 +161,7 @@ def get_init_data(
                 Organizer(
                     surname=surname,
                     name=name,
+                    chat_id = 0,
                     tg_tag=tg_tag,
                     vk_link=vk_link,
                     phone=phone,
@@ -256,6 +262,23 @@ def get_init_data(
 
                 if schedule_item.count() > 0:
                     schedule_item = schedule_item[0]
+
+                    old_desc = schedule_item.desc
+
+                    if old_desc != desc and tg_tag:
+                        print('Пользователь c изменением и непустым тегом тг найден ')
+                        print(tg_tag)
+                        
+                        try: 
+                            user = Organizer.objects.get(tg_tag=tg_tag)
+                            chat_id = user.chat_id
+                                
+                            print(tg_tag)
+                            print(chat_id)
+                            if bot and chat_id!=0:
+                                bot.send_message(chat_id = chat_id, text = f"Расписание изменено c {start_time} до {finish_time} - {desc}")
+                        except Exception:
+                            print(f"Не отправилось сообщение об изменении расписания юзеру {tg_tag}")
 
                     schedule_item.desc = desc
                     schedule_item.date = date
