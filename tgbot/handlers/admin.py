@@ -214,7 +214,8 @@ def info_mailing(update, context):
         end = message_text.find('>')
         text = message_text[start:end]
         department = message_text[message_text.find('>') + 2:]
-        orgs_list = []
+        done = []
+        undone = []
 
         orgs = []
         for org in Organizer.objects.all():
@@ -222,12 +223,16 @@ def info_mailing(update, context):
                 orgs.append(org)
 
         for org in orgs:
-            context.bot.send_message(chat_id=org.chat_id, text=text)
-            orgs_list.append(org.tg_tag)
+            if org.chat_id != '':
+                done.append(org.tg_tag)
+                context.bot.send_message(chat_id=org.chat_id, text=text)
+            else:
+                undone.append(org.tg_tag)
 
         context.bot.send_message(
             user_id,
-            text=st.notification_broadcast_address + f'{", ".join(orgs_list)}'
+            text=st.notification_broadcast_address + f'{", ".join(done)}' + '\n'
+                 + st.notification_broadcast_unsucces_address + f'{", ".join(undone)}'
         )
         context.bot.send_message(user_id, text=st.notification_broadcast_success)
 

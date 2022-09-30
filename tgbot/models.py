@@ -209,7 +209,7 @@ class UserActionLog(models.Model):
 
 class Organizer(models.Model):
     id = models.BigAutoField(primary_key=True)
-    chat_id = models.CharField(max_length=256)
+    chat_id = models.CharField(default='')
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
     is_admin = models.BooleanField(default=False)
@@ -230,7 +230,7 @@ class Room(models.Model):
 
 class Guest(models.Model):
     id = models.BigAutoField(primary_key=True)
-    chat_id = models.CharField(max_length=256)
+    chat_id = models.CharField(default='')
     is_banned = models.BooleanField(default=False)
     surname = models.CharField(max_length=256)
     name = models.CharField(max_length=256)

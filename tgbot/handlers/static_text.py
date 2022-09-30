@@ -103,5 +103,6 @@ guest_too_much_args = "Вы ввели слишком много данных\n"
 notification_no_argument = 'Вы ввели недостаточно аргументов'
 notification_broadcast_success = 'Рассылка успешно завершена'
 notification_broadcast_address = 'Рассылку получили: '
+notification_broadcast_unsucces_address = 'Рассылку не получили (по причине: эти юзеры еще не писали боту): '
 notification_banned_user_reason = 'Вы были удалены из нашего сервиса. Причины: '
 notification_command_success = 'Команда выполнена успешно'
