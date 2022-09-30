@@ -162,20 +162,19 @@ def time_to_move(context: CallbackContext):
 
     day_now = f"{dt.day}.{dt.month}.{dt.year}" # формат вида 1.10.2022 
     time = dt.time().strftime('%H:%M') # формат вида 07:15
-    time_now = datetime.datetime.strptime(time, '%H:%M')
     print("Сейчас "+ time)
 
-
     org = OrganizerSchedule.objects.filter(tg_tag=tg_tag, date=day_now)
+
     for item in org:
-        print("item")
-        print("время ", item.start_time)
-        print("задача ", item.desс)
-        if datetime.datetime.strptime(item.start_time, '%H:%M') - time_now < datetime.timedelta(minutes = 15):
-            print("прошел проверку, вернул задачу ", item.desс)
+
+        desc = item.desc
+
+        start_time = datetime.datetime.strptime(item.start_time+'-'+item.date, '%H:%M-%d.%m.%Y')
+        if start_time > dt and start_time - dt < datetime.timedelta(minutes = 15):
             return context.bot.send_message(
                 chat_id = chat_id,
-                text = f"Смена деятельности с {item.start_time} - {item.desс}"
+                text = f"Смена деятельности с {item.start_time} - {desc}"
             )
 
     
@@ -187,6 +186,12 @@ def commands_list(update, context):
 
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+        text += static_text.organizer_commands
+    except Organizer.DoesNotExist:
+        return context.bot.send_message(user_id, text=text)
 
     # Для информирования оргов о времени перейти на новую точку
     # first - когда первый раз запустится задача
@@ -214,11 +219,7 @@ def commands_list(update, context):
         ),
         context = {'id':user_id, 'tag':username}
     )
-    try:
-        user = Organizer.objects.get(tg_tag=username)
-        text += static_text.organizer_commands
-    except Organizer.DoesNotExist:
-        return context.bot.send_message(user_id, text=text)
+    
     if user.is_admin:
         text += static_text.secret_admin_commands
     return context.bot.send_message(user_id, text=text)
