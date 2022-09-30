@@ -209,9 +209,11 @@ def info_mailing(update, context):
         return
 
     try:
-        end = context.args[0].find('>')
-        text = context.args[0][1:end]
-        department = context.args[1]
+        message_text = update.message.text
+        start = message_text.find('<') + 1
+        end = message_text.find('>')
+        text = message_text[start:end]
+        department = message_text[message_text.find('>') + 2:]
         orgs_list = []
 
         orgs = []
