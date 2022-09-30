@@ -275,6 +275,57 @@ def guest_info(update, context):
         return context.bot.send_message(user_id, text=(st.guest_too_much_args + st.guest_no_arg))
 
 
+def depart_list(update, context):
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+
+    all_orgs = Organizer.objects.all()
+    orgs_of_dep = list()
+    departs = set()
+
+    for org in all_orgs:
+        deps_list = org.department.split(",")
+        for depart in deps_list:
+            departs.add(depart)
+
+    return context.bot.send_message(
+        user_id,
+        text='\n'.join(departs)
+    )
+
+
+def get_team(update, context):
+    username = update.message.from_user['username']
+    user_id = update.message.from_user['id']
+    text = ""
+
+    try:
+        user = Organizer.objects.get(tg_tag=username)
+    except Organizer.DoesNotExist:
+        return
+    
+    if len(context.args) == 0:
+        return context.bot.send_message(user_id, text=st.team_no_arg)
+    if not context.args[0].isdigit():
+        return context.bot.send_message(user_id, text=st.error_issue_arg)
+    
+    teammates = Guest.objects.filter(team=context.args[0])
+
+    if teammates.count() == 0:
+        return context.bot.send_message(user_id, text=st.team_not_found)
+
+    text += f"Команда №{context.args[0]}\n"
+    for guest in teammates:
+        text += f"{guest.surname} {guest.name} {guest.patronymic} t.me/{guest.tg_tag}\n"
+
+    return context.bot.send_message(user_id, text=text)
+
+
 def get_current_event(current_time: dt.datetime, org: Organizer):
     if current_time.minute >= 30:
         current_time = current_time.replace(minute=30)
@@ -301,16 +352,47 @@ def get_current_event(current_time: dt.datetime, org: Organizer):
 
 
 def get_schedule(tg_tag: str):
-    events = OrganizerSchedule.objects.filter(tg_tag=tg_tag).order_by('date', 'start_time')
+    current_time = dt.datetime.now()
+    events = OrganizerSchedule.objects.filter(tg_tag=tg_tag)
     sched = ''
     if events.count() == 0:
         return "No events\n"
+    
+    if current_time.minute >= 30:
+        current_time = current_time.replace(minute=30)
+    else:
+        current_time = current_time.replace(minute=0)
+    
+    start_time = current_time.strftime("%H:%M")
+    date = current_time.strftime("%d.%m.%Y")
+
+    # For test use commented vars instead of actual
+    # start_time = dt.time(minute=0, hour = 16).strftime("%H:%M")
+    # date = dt.date(day=1, month=10, year=2022).strftime("%d.%m.%Y")
+    # current_time = dt.datetime.strptime(date+' '+ start_time, "%d.%m.%Y %H:%M")
+
+    if date[0] == '0':
+        date = date[1:]
+    if start_time[0] == '0':
+        start_time = start_time[1:]
+    
+    events = list(events)
+    events = list(filter(
+        lambda x: current_time <= dt.datetime.strptime(x.date+' '+ x.start_time, "%d.%m.%Y %H:%M"),
+        events
+    ))
+
+    if len(events) == 0:
+        return "No event"
+
+    events.sort(
+        key=lambda x: dt.datetime.strptime(x.date+' '+ x.start_time, "%d.%m.%Y %H:%M") 
+    )
 
     current_action = events[0].desc
     current_start_time = events[0].start_time
     current_start_date = events[0].date
     current_end_time = events[0].finish_time
-
     for event in events[1:]:
         if current_action == event.desc:
             current_end_time = event.finish_time
@@ -326,12 +408,13 @@ def get_schedule(tg_tag: str):
     sched += f'*{current_action}* в {day} день с {current_start_time} до ...'
 
     return sched
-
+    
 
 def get_guest_info(guest: Guest):
     info = f"ФИО: {guest.surname} {guest.name} {guest.patronymic}\n" \
            f"ТГ: t.me/{guest.tg_tag}\n" \
            f"ВК: {guest.vk_link}\n" \
+           f"Номер телефона: {guest.phone}\n" \
            f"Комната: {guest.room}\n"
 
     if guest.room != '':

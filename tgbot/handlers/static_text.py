@@ -20,20 +20,25 @@ broadcast_header = "This message will be sent to all users.\n\n"
 declined_message_broadcasting = "Рассылка сообщений отклонена❌\n\n"
 error_with_markdown = "Невозможно обработать ваш текст в формате Markdown."
 specify_word_with_error = " У вас ошибка в слове "
-common_comands = "Список доступных команд\n" \
-                "/support -- Обращение в Техподдержку\n" # need to fill
+
+
+common_comands = "/help -- Список доступных команд\n" \
+                "/support -- Обращение в Техподдержку\n"  # need to fill
+
 organizer_commands = "\nКоманды Организатора\n" \
-                    "/depart <Отдел> -- список организаторов из указанного отдела\n" \
                     "/room <номер комнаты> -- полная информация о комнате\n" \
+                    "/departs -- Список отделов\n" \
                     "/depart <Отдел> -- Список организоторов из Отдела\n" \
                     "/depart_now <Отдел> -- Список отдела с активными точками каждого организатора\n" \
                     "/schedule <Фамилия Имя|tg_tag|vklink|номер телефон> -- расписание организатора\n" \
-                    "/guest <Фамилия Имя|tg_tag|vklink|номер телефон> -- полная информация о госте\n"
+                    "/guest <Фамилия Имя|tg_tag|vklink|номер телефон> -- полная информация о госте\n" \
+                    "/team <Номер команды> -- Список участников из определенной команды\n"
+
 secret_admin_commands = "\n⚠️ Секретные команды администратора\n" \
-                        "/stats - bot stats\n\n" \
-                        "/get_iss - list of unsolved issues\n\n" \
-                        "/get_iss <number> - full description of issue with user's contact\n\n" \
-                        "/delete_issues - delete all solved issues from DB\n\n" \
+                        "/restart_parser - ручной перезапуск парсера\n" \
+                        "/get_iss - список все незакрытых тикетов\n" \
+                        "/get_iss <number> - полное описание тикета\n" \
+                        "/delete_issues - удалить все закрытые тикеты из БД\n" \
                         "/delete_user <Tuple[arg1: str, arg2: str]> - забанить перечисленных юзеров по определенным причинам\n"\
                         "Пример: /delete_user @skuikness спам @ylptred возврат -> удалит пользователя с тегом @skuikness по причине спам и пользователя с тегом @ylptred по причине возврат билета\n" \
                         "Возможные значение arg2:\n" \
@@ -63,7 +68,6 @@ secret_admin_commands = "\n⚠️ Секретные команды админи
                         "Атмосфера\n"
 
 
-
 support_start = "Опиши свою проблему ОДНИМ СООБЩЕНИЕМ или нажми /cancel если передумал"
 support_send = "Ваша сообщение отправлено в техподдержки, с вами скоро свяжутся"
 support_cancel = "Отправка сообщения в техподдержку отменена"
@@ -89,11 +93,12 @@ delete_issues_declined = "Действие отменено"
 room_not_found = "Комната с таким номером не найдена"
 room_no_argument = "Вы забыли ввести номер комнаты.\n\nПример корректного ввода:\n/room 5"
 
-depart_no_argument = "Вы забыли ввести Отдел \n\nПример корректного ввода:\n /depart админка"
+depart_no_argument = "Вы забыли ввести Отдел \n\nПример корректного ввода:\n/depart админка"
+depart_now_no_argument = "Вы забыли ввести Отдел \n\nПример корректного ввода:\n/depart_now админка"
 depart_mistake = "Ошибка в названии Отдела"
 list_of_orgs_from = "Список организоторов из отдела"
 
-org_not_found = "Организатор по этим параметрам не найден, возможно вы имели ввиду:\n"
+org_not_found = "Организатор по этим параметрам не найден\n"
 guest_not_found = "Участник по этим параметрам не найден"
 guest_no_arg = "Введите вместе с командой любой из следующих параметров:\n" \
                 "Фамилия Имя | Тэг в ТГ(без @) | ссылка на ВК | Фамилия | Имя\n" \
@@ -106,3 +111,10 @@ notification_broadcast_address = 'Рассылку получили: '
 notification_broadcast_unsucces_address = 'Рассылку не получили (по причине: эти юзеры еще не писали боту): '
 notification_banned_user_reason = 'Вы были удалены из нашего сервиса. Причины: '
 notification_command_success = 'Команда выполнена успешно'
+
+team_no_arg = "Вы забыли ввести Номер команды.\n\nПример корректного ввода:\n/team 5"
+team_not_found = "Команда с таким номером не найдена\n"
+
+parser_notification_success = 'Успешный Парсинг!'
+
+notification_no_rights = 'У Вас не хватает прав для выполнения этой команды'

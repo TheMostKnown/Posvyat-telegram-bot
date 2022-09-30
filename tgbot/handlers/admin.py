@@ -257,7 +257,7 @@ def get_issues(update, context):
         return
 
     if not user.is_admin:
-        return
+        return context.bot.send_message(id=user_id, text=st.notification_no_rights)
 
     if len(context.args) == 0:
         issues_query = Issue.objects.exclude(status=md.SET_FIXED).order_by('id')
@@ -297,7 +297,8 @@ def delete_issues(update, context):
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
 
-
+    if not user.is_admin:
+        return context.bot.send_message(id=user_id, text=st.notification_no_rights)
 
     context.bot.send_message(
         user_id, text=st.delete_issues_choose,
