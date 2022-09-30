@@ -4,12 +4,14 @@ import datetime
 import logging
 from os import stat
 import re
+
+
 import telegram
-from telegram.ext import ConversationHandler
+from telegram.ext import ConversationHandler, CallbackContext
 
 from django.utils import timezone
 from tgbot.handlers import static_text
-from tgbot.models import User, Issue, Room, Guest, Organizer
+from tgbot.models import User, Issue, Room, Guest, Organizer, OrganizerSchedule
 from tgbot.utils import extract_user_data_from_update
 from tgbot.handlers.keyboard_utils import make_keyboard_for_start_command, keyboard_confirm_decline_broadcasting
 from tgbot.handlers.utils import handler_logging
@@ -149,17 +151,75 @@ def issue_cancel(update, context):
     )
     return ConversationHandler.END
 
+def time_to_move(context: CallbackContext):
+    # функция которая отправляет пользователю уведомление, что скоро переход
+    # запускается после ввода пользователем /start
+
+    chat_id = context.job.context['id']
+    tg_tag = context.job.context['tag']
+
+    dt = datetime.datetime.now() #получаем текущее время
+
+    day_now = f"{dt.day}.{dt.month}.{dt.year}" # формат вида 1.10.2022 
+    time = dt.time().strftime('%H:%M') # формат вида 07:15
+    print("Сейчас "+ time)
+
+    org = OrganizerSchedule.objects.filter(tg_tag=tg_tag, date=day_now)
+
+    for item in org:
+
+        desc = item.desc
+
+        start_time = datetime.datetime.strptime(item.start_time+'-'+item.date, '%H:%M-%d.%m.%Y')
+        if start_time > dt and start_time - dt < datetime.timedelta(minutes = 15):
+            return context.bot.send_message(
+                chat_id = chat_id,
+                text = f"Смена деятельности с {item.start_time} - {desc}"
+            )
+
+    
+    
+
 
 def commands_list(update, context):
     text = 'Привет! Вот доступные тебе команды: \n' + static_text.common_comands
 
     username = update.message.from_user['username']
     user_id = update.message.from_user['id']
+
     try:
         user = Organizer.objects.get(tg_tag=username)
         text += static_text.organizer_commands
     except Organizer.DoesNotExist:
         return context.bot.send_message(user_id, text=text)
+
+    # Для информирования оргов о времени перейти на новую точку
+    # first - когда первый раз запустится задача
+    # в 7.50 утра 1.10 октября 2022
+    # будет запускаться с интервалом в 30 минут
+    # last - задача будет запускаться до
+    # 15.50 2.10 2022
+
+    context.job_queue.run_repeating(
+        callback = time_to_move,
+        interval = datetime.timedelta(minutes=30),
+        first = datetime.datetime(
+            year = 2022,
+            month = 10,
+            day = 1,
+            hour=7, 
+            minute = 50,
+            ),
+        last = datetime.datetime(
+            year = 2022,
+            month = 10,
+            day = 2,
+            hour=15, 
+            minute = 50,
+        ),
+        context = {'id':user_id, 'tag':username}
+    )
+    
     if user.is_admin:
         text += static_text.secret_admin_commands
     return context.bot.send_message(user_id, text=text)
