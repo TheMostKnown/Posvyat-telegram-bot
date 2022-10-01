@@ -62,6 +62,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("depart", organizer.depart_orgs))
     dp.add_handler(CommandHandler("depart_now", organizer.depart_orgs_current_moment))
     dp.add_handler(CommandHandler("schedule", organizer.schedule))
+    dp.add_handler(CommandHandler("myschedule", organizer.schedule))
     dp.add_handler(CommandHandler("guest", organizer.guest_info))
     dp.add_handler(CommandHandler("departs", organizer.depart_list))
     dp.add_handler(CommandHandler("team", organizer.get_team))
