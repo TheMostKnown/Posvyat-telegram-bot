@@ -166,16 +166,22 @@ def time_to_move(context: CallbackContext):
 
     org = OrganizerSchedule.objects.filter(tg_tag=tg_tag, date=day_now)
 
-    for item in org:
+    if len(org) > 0:
+        for item in org:
 
-        desc = item.desc
+            desc = item.desc
 
-        start_time = datetime.datetime.strptime(item.start_time+'-'+item.date, '%H:%M-%d.%m.%Y')
-        if start_time > dt and start_time - dt < datetime.timedelta(minutes = 15):
-            return context.bot.send_message(
-                chat_id = chat_id,
-                text = f"Смена деятельности с {item.start_time} - {desc}"
-            )
+            start_time = datetime.datetime.strptime(item.start_time+'-'+item.date, '%H:%M-%d.%m.%Y')
+            if start_time > dt and start_time - dt < datetime.timedelta(minutes = 15):
+                try:
+                    context.bot.send_message(
+                        chat_id = chat_id,
+                        text = f"Смена деятельности с {item.start_time} - {desc}"
+                    )
+                except Exception:
+                    print("Не отправилось уведомление о смене деятельности")
+                return
+    return
 
 
 def commands_list(update, context):
@@ -186,38 +192,40 @@ def commands_list(update, context):
 
     try:
         user = Organizer.objects.get(tg_tag=username)
-        user.chat_id = user_id
-        user.save()
-        text += static_text.organizer_commands
+        if user.chat_id == 0:
+            user.chat_id = user_id
+            user.save()
+            text += static_text.organizer_commands
+
+            # Для информирования оргов о времени перейти на новую точку
+            # first - когда первый раз запустится задача
+            # в 7.50 утра 1.10 октября 2022
+            # будет запускаться с интервалом в 30 минут
+            # last - задача будет запускаться до
+            # 15.50 2.10 2022
+
+            context.job_queue.run_repeating(
+                callback=time_to_move,
+                interval=datetime.timedelta(minutes=10),
+                first=datetime.datetime(
+                    year=2022,
+                    month=10,
+                    day=1,
+                    hour=7,
+                    minute=50,
+                ),
+                last=datetime.datetime(
+                    year=2022,
+                    month=10,
+                    day=2,
+                    hour=15,
+                    minute=50,
+                ),
+                context={'id': user_id, 'tag': username}
+            )
     except Organizer.DoesNotExist:
         return context.bot.send_message(user_id, text=text)
 
-    # Для информирования оргов о времени перейти на новую точку
-    # first - когда первый раз запустится задача
-    # в 7.50 утра 1.10 октября 2022
-    # будет запускаться с интервалом в 30 минут
-    # last - задача будет запускаться до
-    # 15.50 2.10 2022
-
-    context.job_queue.run_repeating(
-        callback = time_to_move,
-        interval = datetime.timedelta(minutes=30),
-        first = datetime.datetime(
-            year = 2022,
-            month = 10,
-            day = 1,
-            hour=7, 
-            minute = 50,
-            ),
-        last = datetime.datetime(
-            year = 2022,
-            month = 10,
-            day = 2,
-            hour=15, 
-            minute = 50,
-        ),
-        context = {'id':user_id, 'tag':username}
-    )
     
     if user.is_admin:
         text += static_text.secret_admin_commands
